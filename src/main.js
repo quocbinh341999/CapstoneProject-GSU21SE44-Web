@@ -26,6 +26,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faFontAwesome } from "@fortawesome/free-brands-svg-icons";
 import store from "./store";
 import Router from 'vue-router'
+import "firebase/auth";
 library.add(faFontAwesome);
 // register component
 Vue.component("font-awesome-icon", FontAwesomeIcon);
