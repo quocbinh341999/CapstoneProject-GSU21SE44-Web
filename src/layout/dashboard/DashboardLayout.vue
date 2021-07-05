@@ -1,13 +1,14 @@
 <template>
   <div class="wrapper">
-    <side-bar :title="FIEP">
+    <side-bar>
       <template slot="links">
         <sidebar-link to="/dashboard" :name="$t('sidebar.dashboard')" icon="tim-icons icon-chart-pie-36"/>
         <sidebar-link to="/usermanagement" :name="$t('Quản lý người dùng')" icon="tim-icons icon-atom"/>
         <!-- <sidebar-link to="/eventmanagement" :name="$t('event management')" icon="tim-icons icon-pin"/> -->
         <sidebar-link to="/newsmanagement" :name="$t('Quản lý tin tức')" icon="tim-icons icon-bell-55"/>
         <sidebar-link to="/guidebookmanagement" :name="$t('Quản lý cẩm nang')" icon="tim-icons icon-single-02"/>
-        <!-- <sidebar-link to="/notificationmanagement" :name="$t('notification management')" icon="tim-icons icon-single-02"/> -->
+        <sidebar-link to="/approvepost" :name="$t('Duyệt bài đăng')" icon="tim-icons icon-single-02"/>
+        <!-- <sidebar-link to="/notifications" :name="$t('Duyệt bài đăng2')" icon="tim-icons icon-single-02"/> -->
         <sidebar-link to="/profile" :name="$t('profile')" icon="tim-icons icon-badge"/>
       </template>
     </side-bar>

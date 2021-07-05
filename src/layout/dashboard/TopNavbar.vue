@@ -13,7 +13,7 @@
             <span class="navbar-toggler-bar bar3"></span>
           </button>
         </div>
-        <a class="navbar-brand" href="#pablo">{{routeName}}</a>
+        <a class="navbar-brand" href="#pablo" style="color: grey">{{routeName}}</a>
       </div>
       <button class="navbar-toggler" type="button"
               @click="toggleMenu"
@@ -85,7 +85,7 @@
                 </p>
               </a>
               <li class="nav-link">
-                <a :href="isAdmin?'/profile':'/myprofile'" class="nav-item dropdown-item">Profile</a>
+                <a href="/profile" class="nav-item dropdown-item">Profile</a>
               </li>
               <div class="dropdown-divider"></div>
               <li class="nav-link">
@@ -110,13 +110,13 @@
     computed: {
       getUserAvatar(){
         let user=JSON.parse(localStorage.getItem("userInfo"));
-        return user.avatarUrl;
+        return user.photo;
       },
-      isAdmin(){
-        let user=JSON.parse(localStorage.getItem("userInfo"));
-        console.log(user)
-        return user.roleId===1;
-      },
+      // isAdmin(){
+      //   let user=JSON.parse(localStorage.getItem("userInfo"));
+      //   console.log(user)
+      //   return user.roleId===1;
+      // },
       userFullname(){
         let user=JSON.parse(localStorage.getItem("userInfo"));
         return user.fullName;

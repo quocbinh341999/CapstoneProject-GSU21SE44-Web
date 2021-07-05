@@ -3,43 +3,48 @@
     <h5 slot="header" class="title">Profile</h5>
     <div class="row">
       <div class="col-md-6 pr-md-1">
-        <base-input label="Project"
-                  placeholder="FIEP"
-                  
-                  disabled>
-        </base-input>
+        <base-input label="Project" placeholder="Mumbi" disabled id="testColor"> </base-input>
       </div>
       <div class="col-md-6 pl-md-1">
-        <base-input label="Email address"
-                  type="email"
-                  v-model="model.mail"
-                  disabled
+        <base-input
+          label="Email"
+          type="email"
+          v-model="model.mail"
+          disabled
+          id="testColor"
         >
         </base-input>
       </div>
     </div>
     <div class="row">
       <div class="col-md-12 pr-md-1">
-        <base-input label="Full Name"
-                  v-model="model.fullName"
-                  placeholder="Fullname"
-                  disabled
-                  >
-                  
+        <base-input
+          label="Họ và tên"
+          v-model="model.fullName"
+          placeholder="Fullname"
+          disabled
+          id="testColor"
+        >
         </base-input>
       </div>
-      <!-- <div class="col-md-6 pl-md-1">
-        <base-input label="Last Name"
-                  v-model="model.lastName"
-                  placeholder="Last Name">
-        </base-input>
-      </div> -->
     </div>
     <div class="row">
-      <div class="col-md-12">
-        <base-input label="Role"
-                  v-model="model.address"
-                  placeholder="Role" disabled>
+      <div class="col-md-6 pr-md-1">
+        <base-input
+          label="Số điện thoại"
+          v-model="model.phoneNumber"
+          disabled
+          id="testColor"
+        >
+        </base-input>
+      </div>
+      <div class="col-md-6 pl-md-1">
+        <base-input
+        id="testColor"
+          label="Ngày sinh"
+          v-model="model.birthDay"
+          disabled
+        >
         </base-input>
       </div>
     </div>
@@ -75,20 +80,24 @@
         </base-input>
       </div>
     </div> -->
-    <!-- <base-button slot="footer" type="primary" fill>Save</base-button> -->
+    <!-- <base-button slot="footer" type="primary" @click="editProfile">Chỉnh sửa hồ sơ</base-button> -->
   </card>
 </template>
 <script>
-  export default {
-    props: {
-      model: {
-        type: Object,
-        default: () => {
-          return {};
-        }
-      }
+export default {
+  props: {
+    model: {
+      type: Object,
+      default: () => {
+        return {};
+      },
     },
-  }
+  },
+};
 </script>
 <style>
+#testColor{
+  color: black;
+  background-color: white;
+}
 </style>

@@ -1,10 +1,10 @@
 <template>
   <div>
-    <h1>QUẢN LÝ CẨM NANG</h1>
+    <h1 style="color: #909399">QUẢN LÝ CẨM NANG</h1>
     <el-button
       type="primary"
       @click="dialogFormAddVisible = true"
-      style="margin-bottom: 15px"
+      style="margin-bottom: 15px; color: #909399"
       plain
       >Thêm cẩm nang mới</el-button
     >
@@ -41,7 +41,7 @@
               "
               >Selected image: {{ uploadingImage.name }}</span
             >
-            <span v-else style="cursor: pointer">Select File</span>
+            <span v-else style="cursor: pointer">Chọn File</span>
           </div>
           <!-- Now, the file input that we hide. -->
           <input
@@ -53,55 +53,64 @@
             v-on:change="handleFileChangeOnCreateNews"
           />
         </label>
-        <el-form-item label="Title" :label-width="formLabelWidth">
+        <el-form-item label="Tiêu đề" :label-width="formLabelWidth">
           <el-input v-model="addNews.newsTitle" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="Content" :label-width="formLabelWidth">
-          <el-input v-model="addNews.NewsContent" autocomplete="off"></el-input>
+        <el-form-item label="Nội dung" :label-width="formLabelWidth">
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 4 }"
+            v-model="addNews.NewsContent"
+          >
+          </el-input>
+          <!-- <el-input v-model="addNews.NewsContent" autocomplete="off"></el-input> -->
         </el-form-item>
-                      <el-form-item label="Type" :label-width="formLabelWidth">
-                <el-select
-                  v-model="addNews.typeName"
-                  placeholder="Please select a type"
-                  style="float: left"
-                >
-                  <el-option
-                    v-for="item in listtype"
-                    :key="item.id"
-                    :label="item.type"
-                    :value="item.id"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
+        <el-form-item label="Loại cẩm nang" :label-width="formLabelWidth">
+          <el-select
+            v-model="addNews.typeName"
+            placeholder="Vui lòng lựa chọn loại cẩm nang"
+            style="float: left"
+            :min-width="300"
+          >
+            <el-option
+              v-for="item in listtype"
+              :key="item.id"
+              :label="item.type"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormAddVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="confirmAdd()">Confirm</el-button>
+        <el-button @click="dialogFormAddVisible = false">Hủy bỏ</el-button>
+        <el-button type="primary" @click="confirmAdd()">Xác nhận</el-button>
       </span>
     </el-dialog>
     <el-table
       :data="searchResult ? searchResult : tableData"
       style="width: 100%"
     >
-      <el-table-column label="Id" width="180px">
+      <el-table-column label="Id" :min-width="80">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Title" width="180px">
+      <el-table-column label="Tiêu đề" :min-width="110">
         <template slot-scope="scope">
           <span>{{ scope.row.title }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Content">
+      <el-table-column label="Nội dung" :min-width="150">
         <template slot-scope="scope">
-          <span>{{ scope.row.guidebookContent }}</span>
+          <a :href="scope.row.guidebookContent"
+            ><span>{{ scope.row.guidebookContent }}</span></a
+          >
         </template>
       </el-table-column>
-      <el-table-column label="Image" prop="image">
+      <el-table-column label="Hình ảnh" prop="image" :min-width="80">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleImage(scope.row.image)"
-            >Show</el-button
+          <el-button size="mini" @click="handleImage(scope.row.imageURL)"
+            >Hiển thị</el-button
           >
           <el-dialog title="Image" :visible.sync="imageDialogVisible">
             <el-form :model="dialogImage">
@@ -118,7 +127,6 @@
                     ></i>
                   </div>
                 </el-image>
-
                 <img style="width: 100%" :src="dialogImage.imageUrl" />
               </el-form-item>
             </el-form>
@@ -141,9 +149,9 @@
         </template>
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
-            >Edit</el-button
+            >Chỉnh sửa</el-button
           >
-          <el-dialog title="Guidebook Detail" :visible.sync="dialogFormVisible">
+          <el-dialog :visible.sync="dialogFormVisible">
             <el-form :model="form">
               <el-row type="flex" class="row-bg" justify="center">
                 <el-form-item style="width: 50%">
@@ -164,9 +172,7 @@
                 </el-form-item>
               </el-row>
               <label class="file-select" style="margin-left: 80%">
-                <!-- We can't use a normal button element here, as it would become the target of the label. -->
                 <div class="select-button">
-                  <!-- Display the filename if a file has been selected. -->
                   <span
                     v-if="uploadingImage"
                     style="
@@ -179,7 +185,7 @@
                     "
                     >Selected image: {{ uploadingImage.name }}</span
                   >
-                  <span v-else style="cursor: pointer">Select File</span>
+                  <span v-else style="cursor: pointer">Chọn File</span>
                 </div>
                 <!-- Now, the file input that we hide. -->
                 <input
@@ -191,19 +197,21 @@
                   v-on:change="handleFileChange"
                 />
               </label>
-              <el-form-item label="Title" :label-width="formLabelWidth">
+              <el-form-item label="Tiêu đề" :label-width="formLabelWidth">
                 <el-input v-model="form.title" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="Content" :label-width="formLabelWidth">
+              <el-form-item label="Nội dung" :label-width="formLabelWidth">
                 <el-input
+                  type="textarea"
+                  :autosize="{ minRows: 2, maxRows: 4 }"
                   v-model="form.NewsContent"
-                  autocomplete="off"
-                ></el-input>
+                >
+                </el-input>
               </el-form-item>
-              <el-form-item label="Type" :label-width="formLabelWidth">
+              <el-form-item label="Loại cẩm nang" :label-width="formLabelWidth">
                 <el-select
                   v-model="form.typeName"
-                  placeholder="Please select a type"
+                  placeholder="Vui lòng lựa chọn loại cẩm nang"
                   style="float: left"
                 >
                   <el-option
@@ -216,11 +224,11 @@
               </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-              <el-button @click="dialogFormVisible = false">Cancel</el-button>
+              <el-button @click="dialogFormVisible = false">Hủy bỏ</el-button>
               <el-button
                 type="primary"
                 @click="confirm(scope.$index, scope.row)"
-                >Confirm</el-button
+                >Xác nhận</el-button
               >
             </span>
           </el-dialog>
@@ -229,7 +237,7 @@
             type="danger"
             @click="handleDelete(scope.$index, scope.row)"
             style="margin-left: 10px"
-            >Delete</el-button
+            >Xóa</el-button
           >
         </template>
       </el-table-column>
@@ -358,7 +366,7 @@ export default {
       this.form.title = row.title;
       this.form.NewsContent = row.guidebookContent;
       this.form.typeName = row.typeId;
-      this.form.imageUrl = row.image;
+      this.form.imageUrl = row.imageURL;
     },
     async confirm(index, row) {
       this.dialogFormVisible = false;
@@ -379,14 +387,15 @@ export default {
               id: GuidebookId,
               title: this.form.title,
               guidebookContent: this.form.NewsContent,
-              image: imageUrl1,
+              imageURL: imageUrl1,
               typeId: this.form.typeName,
             }
           );
           this.tableData[this.editedIndex].title = this.form.title;
-          this.tableData[this.editedIndex].guidebookContent = this.form.NewsContent;
+          this.tableData[this.editedIndex].guidebookContent =
+            this.form.NewsContent;
           this.tableData[this.editedIndex].typeId = this.form.typeName;
-          this.tableData[this.editedIndex].image = this.form.imageUrl;
+          this.tableData[this.editedIndex].imageURL = this.form.imageUrl;
         } else {
           await axios.put(
             `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/Guidebooks/UpdateGuidebook/` +
@@ -395,24 +404,25 @@ export default {
               id: GuidebookId,
               title: this.form.title,
               guidebookContent: this.form.NewsContent,
-              image: this.form.imageUrl,
+              imageURL: this.form.imageUrl,
               typeId: this.form.typeName,
             }
           );
-          this.tableData[this.editedIndex].image = this.form.imageUrl;
+          this.tableData[this.editedIndex].imageURL = this.form.imageUrl;
           this.tableData[this.editedIndex].title = this.form.title;
-          this.tableData[this.editedIndex].guidebookContent = this.form.NewsContent;
+          this.tableData[this.editedIndex].guidebookContent =
+            this.form.NewsContent;
           this.tableData[this.editedIndex].typeId = this.form.typeName;
         }
 
         this.$message({
-          message: `Update Guidebook ${GuidebookId} successfully`,
+          message: `Cập nhật cẩm nang thành công !`,
           type: "success",
         });
       } catch (e) {
         console.log(e);
         this.$message({
-          message: `Fail to update Guidebook ${GuidebookId} `,
+          message: `Cập nhật cẩm nang không thành công ! `,
         });
       }
     },
@@ -450,7 +460,7 @@ export default {
             {
               title: titleNews,
               guidebookContent: NewsContent,
-              image: imageUrl,
+              imageURL: imageUrl,
               typeId: type,
             }
           );
@@ -466,9 +476,9 @@ export default {
         }
         this.$message({
           type: "success",
-          message: `Create new Guidebook successfully!`,
+          message: `Tạo cẩm nang thành công !`,
         });
-        axios
+        await axios
           .get(
             `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/Guidebooks/GetAllGuidebook`
           )
@@ -482,7 +492,7 @@ export default {
       } catch (e) {
         console.log(e);
         this.$message({
-          message: `Fail to create new Guidebook`,
+          message: `Tạo cẩm nang không thành công !`,
         });
       }
     },
@@ -521,19 +531,15 @@ export default {
       this.$msgbox({
         title: "Warning",
         message: h("p", null, [
-          h(
-            "span",
-            { style: "color: black" },
-            "This will permanently delete this guidebook. Are you sure ? "
-          ),
+          h("span", { style: "color: black" }, "Bạn có chắc chắn muốn xóa ? "),
         ]),
         showCancelButton: true,
-        confirmButtonText: "OK",
-        cancelButtonText: "Cancel",
+        confirmButtonText: "Xác nhận",
+        cancelButtonText: "Hủy bỏ",
         beforeClose: (action, instance, done) => {
           if (action === "confirm") {
             instance.confirmButtonLoading = true;
-            instance.confirmButtonText = "Loading...";
+            instance.confirmButtonText = "Đang chờ...";
             setTimeout(() => {
               done();
               setTimeout(() => {
@@ -560,7 +566,7 @@ export default {
       }).then((action) => {
         this.$message({
           type: "success",
-          message: "Delete completed",
+          message: "Xóa thành công !",
         });
       });
     },

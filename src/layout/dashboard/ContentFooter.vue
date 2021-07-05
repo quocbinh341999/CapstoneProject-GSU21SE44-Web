@@ -1,9 +1,9 @@
 <template>
-  <footer class="footer">
+  <footer class="footer" style="background-color:NavajoWhite">
     <div class="container-fluid">
       
       <div class="copyright">
-        © {{year}} made with <i class="tim-icons icon-heart-2"></i> by FIEP dev team.
+        <!-- © {{year}} made with <i class="tim-icons icon-heart-2"></i> by FIEP dev team. -->
       </div>
     </div>
   </footer>

@@ -20,6 +20,7 @@ const UserGM = () => import(/* webpackChunkName: "common" */ "@/pages/UserGM.vue
 const EventGM = () => import(/* webpackChunkName: "common" */ "@/pages/EventGM.vue");
 const PostGM = () => import(/* webpackChunkName: "common" */ "@/pages/PostGM.vue");
 const GuidebookManagement = () => import(/* webpackChunkName: "common" */ "@/pages/GuidebookManagement.vue");
+const ApprovePost = () => import(/* webpackChunkName: "common" */ "@/pages/AprovePost.vue");
 const EditProfile = () => import(/* webpackChunkName: "common" */ "@/pages/Profile/EditProfileForm.vue")
 const NotificationManagement = () => import(/* webpackChunkName: "common" */ "@/pages/NotificationManagement.vue")
 const routes = [
@@ -123,9 +124,9 @@ const routes = [
         component: GuidebookManagement
       },
       {
-        path: "/notificationmanagement",
-        name: "notificationmanagement",
-        component: NotificationManagement
+        path: "/approvepost",
+        name: "approvepost",
+        component: ApprovePost
       }
     ]
   },

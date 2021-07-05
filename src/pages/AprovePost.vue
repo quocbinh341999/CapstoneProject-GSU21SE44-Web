@@ -1,31 +1,26 @@
 <template>
   <div>
-    <h1 style="color: #909399">QUẢN LÝ NGƯỜI DÙNG</h1>
+    <h1 style="color: #909399">DUYỆT BÀI ĐĂNG</h1>
     <el-table
       :data="searchResult ? searchResult : tableData"
       style="width: 100%"
     >
-      <el-table-column label="Id" :min-width="140">
+      <el-table-column label="Id" :min-width="50">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Họ tên" :min-width="140">
+      <el-table-column label="Nội dung" :min-width="110">
         <template slot-scope="scope">
-          <span>{{ scope.row.fullName }}</span>
+          <span>{{ scope.row.diaryContent }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Số điện thoại" :min-width="120">
+      <el-table-column label="Hình ảnh" prop="image" :min-width="80">
         <template slot-scope="scope">
-          <span>{{ scope.row.phonenumber }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Hình ảnh" prop="image">
-        <template slot-scope="scope">
-          <el-button size="mini" @click="handleImage(scope.row.imageURL)"
+          <el-button size="mini" @click="handleImage(scope.row.image)"
             >Hiển thị</el-button
           >
-          <el-dialog title="Hình ảnh" :visible.sync="imageDialogVisible" :lock-scroll="true">
+          <el-dialog title="Hình ảnh" :visible.sync="imageDialogVisible">
             <el-form :model="dialogImage">
               <el-form-item>
                 <el-image
@@ -47,7 +42,11 @@
           </el-dialog>
         </template>
       </el-table-column>
-
+      <el-table-column label="ChildId" :min-width="130">
+        <template slot-scope="scope">
+          <span>{{ scope.row.childId }}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="right">
         <template slot="header" slot-scope="scope">
           <el-input
@@ -58,12 +57,15 @@
           />
         </template>
         <template slot-scope="scope">
+          <el-button size="mini" @click="handleApprove(scope.$index, scope.row)"
+            >Duyệt</el-button
+          >
           <el-button
             size="mini"
             type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
+            @click="handleDeny(scope.$index, scope.row)"
             style="margin-left: 10px"
-            >Xóa</el-button
+            >Không duyệt</el-button
           >
         </template>
       </el-table-column>
@@ -90,37 +92,27 @@
 
 <script>
 import axios from "axios";
-import Request from "../services/RequestBase.js";
 import * as firebase from "firebase/app";
 import "firebase/firebase-storage";
+import Request from "../services/RequestBase.js";
 import baseConfig from "../config";
 const backendIp = baseConfig.backendIp;
 export default {
   data() {
     return {
-      searchResult: null,
-
-      uploadingImage: null,
       tableData: [],
-      // addUser: {
-      //   userId: "",
-      //   fullName: "",
-      //   email: "",
-      //   role: "",
-      //   avatarUrl:"",
-
-      //   avatarFile:null,
-      // },
-      dialogImage: { imageUrl: "" },
-      dialogFormVisible: false,
       imageDialogVisible: false,
-      dialogFormAddVisible: false,
+      dialogImage: { imageUrl: "" },
+      uploadingImage: "",
       formLabelWidth: "120px",
+      formLabelWidth1: "180px",
       search: "",
       editedIndex: -1,
-      userIdDelete: "",
+      NewsIdDelete: "",
+      listtype: [],
       pagination: [],
       totalPages: 0,
+      searchResult: null,
       rsPage: 0,
     };
   },
@@ -132,7 +124,7 @@ export default {
     });
     axios
       .get(
-        `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/MomInfo/GetAllMomInfo`
+        `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/Diaries/GetDiaryPublic`
       )
       .then((rs) => {
         this.tableData = rs.data.data;
@@ -143,23 +135,16 @@ export default {
       });
   },
   methods: {
-    async handleFileChange() {
-      let file = this.$refs.userimageupload.files[0];
-      let resultData = await this.readAsync(file);
-      this.form.avatarUrl = resultData;
-      this.form.avatarFile = file;
-    },
-    async handleFileChangeOnCreateUser() {
-      let file = this.$refs.createuserimageupload.files[0];
-      let resultData = await this.readAsync(file);
-      this.addUser.avatarUrl = resultData;
-      this.addUser.avatarFile = file;
+    handleImage(imageUrl) {
+      this.imageDialogVisible = true;
+      this.dialogImage.imageUrl = imageUrl;
+      console.log(imageUrl, this.dialogImage);
     },
     paginationLoad(pageNumber) {
       const req = Request();
       let pageSize = 5;
-      let UserRepository = this.$repository.get("users");
-      new UserRepository(req)
+      let NewsRepository = this.$repository.get("Newss");
+      new NewsRepository(req)
         .get({ pageSize, pageNumber })
         .then((rs) => {
           if (this.searchResult === null) {
@@ -171,12 +156,29 @@ export default {
         })
         .catch((e) => console.error(e));
     },
-    handleImage(imageUrl) {
-      this.imageDialogVisible = true;
-      this.dialogImage.imageUrl = imageUrl;
-      console.log(imageUrl, this.dialogImage);
+    async handleApprove(index, row) {
+      this.editedIndex = this.tableData.indexOf(row);
+      let diaryId = this.tableData[this.editedIndex].id;
+      let childIdApprove = this.tableData[this.editedIndex].childId;
+      let content = this.tableData[this.editedIndex].diaryContent;
+      await axios
+        .put(
+          `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/Diaries/UpdateDiary/${diaryId}?childID=${childIdApprove}`,
+          {
+            id: diaryId,
+            isApproved: true,
+            isPublic: true,
+            diaryContent: content,
+            childId: childIdApprove,
+          }
+        )
+        .then((rs) => {
+          this.$message({
+            type: "success",
+            message: `Duyệt bài đăng id{${diaryId}} thành công !`,
+          });
+        });
     },
-
     readAsync(blob) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -188,6 +190,18 @@ export default {
         };
         reader.readAsDataURL(blob);
       });
+    },
+    async handleFileChange() {
+      let file = this.$refs.Newsimageupload.files[0];
+      let resultData = await this.readAsync(file);
+      this.form.imageUrl = resultData;
+      this.form.imageFile = file;
+    },
+    async handleFileChangeOnCreateNews() {
+      let file = this.$refs.createNewsimageupload.files[0];
+      let resultData = await this.readAsync(file);
+      this.addNews.imageUrl = resultData;
+      this.addNews.imageFile = file;
     },
     onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files;
@@ -205,55 +219,23 @@ export default {
       reader.readAsDataURL(file);
     },
     removeImage: function (e) {
-      this.addUser.image = "";
+      this.addNews.image = "";
     },
-    handleDelete(index, row) {
-      const h = this.$createElement;
-      this.$msgbox({
-        title: "Warning",
-        message: h("p", null, [
-          h(
-            "span",
-            { style: "color: black" },
-            "Bạn có chắc chắn muốn xóa ? "
-          ),
-        ]),
-        showCancelButton: true,
-        confirmButtonText: "Xác nhận",
-        cancelButtonText: "Hủy bỏ",
-        beforeClose: (action, instance, done) => {
-          if (action === "confirm") {
-            instance.confirmButtonLoading = true;
-            instance.confirmButtonText = "Loading...";
-            setTimeout(() => {
-              done();
-              setTimeout(() => {
-                instance.confirmButtonLoading = false;
-              }, 300);
-            }, 3000);
-            this.userIdDelete = row.id;
-            axios
-              .put(
-                `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/MomInfo/DeleteMomInfo/` +
-                  this.userIdDelete
-              )
-              .then((response) => {});
-              setTimeout(() => {
-              this.tableData.splice(index, 1);
-              setTimeout(() => {
-                instance.confirmButtonLoading = false;
-              }, 300);
-            }, 3000);
-          } else {
-            done();
-          }
-        },
-      }).then((action) => {
-        this.$message({
-          type: "success",
-          message: `Xóa người dùng ${userIdDelete} thành công !`,
-        });
-      });
+    async handleDeny(index, row) {
+      this.editedIndex = this.tableData.indexOf(row);
+      let diaryId = this.tableData[this.editedIndex].id;
+      let childIdApprove = this.tableData[this.editedIndex].childId;
+      let content = this.tableData[this.editedIndex].diaryContent;
+      await axios.put(
+        `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/Diaries/UpdateDiary/${diaryId}?childID=${childIdApprove}`,
+        {
+          id: diaryId,
+          isApproved: false,
+          isPublic: false,
+          diaryContent: content,
+          childId: childIdApprove,
+        }
+      );
     },
     async onSearchInput(e) {
       if (this.search === "") {
@@ -262,8 +244,7 @@ export default {
         this.rsPage = 0;
       }
       try {
-        let result = await axios.get(`${backendIp}/api/users?query=${e}`);
-
+        let result = await axios.get(`${backendIp}/api/Newss?query=${e}`);
         console.log(result);
         this.searchResult = result.data.data;
       } catch (error) {
