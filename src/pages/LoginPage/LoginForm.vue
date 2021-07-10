@@ -79,7 +79,7 @@ export default {
               "BNN2j64Wo_Ma8G7ElOgRnFH-k9raFwK4jbdOyTJ6BkRPHrI6FXdALMMlKz93x1rSbptR7_ogIHI0yeKLRwnUxVU",
           });
           let loginResult = await axios.post(
-            `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/Authentication/Authenticate`,
+            `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/Authentication/Authenticate/`,
             {
               idToken: token,
               fcmToken: token2,
