@@ -1,5 +1,5 @@
 <template>
-  <card type="user">
+  <card type="user" style="height: 91%">
     <p class="card-text">
     </p>
     <div class="author">
@@ -15,7 +15,7 @@
         {{user.title}}
       </p>
     </div>
-    <div slot="footer" class="button-container">
+    <!-- <div slot="footer" class="button-container">
       <base-button icon round class="btn-facebook">
         <i class="fab fa-facebook"></i>
       </base-button>
@@ -25,7 +25,7 @@
       <base-button icon round class="btn-google">
         <i class="fab fa-google-plus"></i>
       </base-button>
-    </div>
+    </div> -->
   </card>
 </template>
 <script>

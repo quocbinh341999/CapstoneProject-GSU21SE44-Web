@@ -5,49 +5,31 @@
       :data="searchResult ? searchResult : tableData"
       style="width: 100%"
     >
-      <el-table-column label="Id" :min-width="140">
+      <el-table-column label="STT" type="index" width="50"> </el-table-column>
+      <el-table-column label="Hình ảnh" prop="image" width="200">
         <template slot-scope="scope">
-          <span>{{ scope.row.id }}</span>
+          <img
+            v-if="scope.row.imageURL != ''"
+            :src="scope.row.imageURL"
+            style="height: 150px; width: 300px"
+          />
         </template>
       </el-table-column>
-      <el-table-column label="Họ tên" :min-width="140">
+      <el-table-column label="Họ tên" width="210">
         <template slot-scope="scope">
           <span>{{ scope.row.fullName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Số điện thoại" :min-width="120">
+      <el-table-column label="Số điện thoại" width="100">
         <template slot-scope="scope">
           <span>{{ scope.row.phonenumber }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Hình ảnh" prop="image">
+      <el-table-column label="Email" width="210">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleImage(scope.row.imageURL)"
-            >Hiển thị</el-button
-          >
-          <el-dialog title="Hình ảnh" :visible.sync="imageDialogVisible" :lock-scroll="true">
-            <el-form :model="dialogImage">
-              <el-form-item>
-                <el-image
-                  style="width: 100%"
-                  :fit="fit"
-                  v-if="dialogImage.imageUrl === ''"
-                >
-                  <div slot="error" class="image-slot text-center">
-                    <i
-                      style="font-size: 3rem"
-                      class="el-icon-picture-outline"
-                    ></i>
-                  </div>
-                </el-image>
-
-                <img style="width: 100%" :src="dialogImage.imageUrl" />
-              </el-form-item>
-            </el-form>
-          </el-dialog>
+          <span>{{ scope.row.email }}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="right">
         <template slot="header" slot-scope="scope">
           <el-input
@@ -102,15 +84,6 @@ export default {
 
       uploadingImage: null,
       tableData: [],
-      // addUser: {
-      //   userId: "",
-      //   fullName: "",
-      //   email: "",
-      //   role: "",
-      //   avatarUrl:"",
-
-      //   avatarFile:null,
-      // },
       dialogImage: { imageUrl: "" },
       dialogFormVisible: false,
       imageDialogVisible: false,
@@ -125,11 +98,6 @@ export default {
     };
   },
   created: function () {
-    const req = Request({
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-    });
     axios
       .get(
         `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/MomInfo/GetAllMomInfo`
@@ -143,18 +111,6 @@ export default {
       });
   },
   methods: {
-    async handleFileChange() {
-      let file = this.$refs.userimageupload.files[0];
-      let resultData = await this.readAsync(file);
-      this.form.avatarUrl = resultData;
-      this.form.avatarFile = file;
-    },
-    async handleFileChangeOnCreateUser() {
-      let file = this.$refs.createuserimageupload.files[0];
-      let resultData = await this.readAsync(file);
-      this.addUser.avatarUrl = resultData;
-      this.addUser.avatarFile = file;
-    },
     paginationLoad(pageNumber) {
       const req = Request();
       let pageSize = 5;
@@ -171,52 +127,12 @@ export default {
         })
         .catch((e) => console.error(e));
     },
-    handleImage(imageUrl) {
-      this.imageDialogVisible = true;
-      this.dialogImage.imageUrl = imageUrl;
-      console.log(imageUrl, this.dialogImage);
-    },
-
-    readAsync(blob) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          resolve(e.target.result);
-        };
-        reader.onerror = () => {
-          reject(new Error("Unable to read.."));
-        };
-        reader.readAsDataURL(blob);
-      });
-    },
-    onFileChange(e) {
-      var files = e.target.files || e.dataTransfer.files;
-      if (!files.length) return;
-      this.createImage(files[0]);
-    },
-    createImage(file) {
-      var image = new Image();
-      var reader = new FileReader();
-      var vm = this;
-
-      reader.onload = (e) => {
-        vm.image = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    },
-    removeImage: function (e) {
-      this.addUser.image = "";
-    },
     handleDelete(index, row) {
       const h = this.$createElement;
       this.$msgbox({
         title: "Warning",
         message: h("p", null, [
-          h(
-            "span",
-            { style: "color: black" },
-            "Bạn có chắc chắn muốn xóa ? "
-          ),
+          h("span", { style: "color: black" }, "Bạn có chắc chắn muốn xóa ? "),
         ]),
         showCancelButton: true,
         confirmButtonText: "Xác nhận",
@@ -238,7 +154,7 @@ export default {
                   this.userIdDelete
               )
               .then((response) => {});
-              setTimeout(() => {
+            setTimeout(() => {
               this.tableData.splice(index, 1);
               setTimeout(() => {
                 instance.confirmButtonLoading = false;
@@ -251,7 +167,7 @@ export default {
       }).then((action) => {
         this.$message({
           type: "success",
-          message: `Xóa người dùng ${userIdDelete} thành công !`,
+          message: `Xóa người dùng ${row.fullName} thành công !`,
         });
       });
     },

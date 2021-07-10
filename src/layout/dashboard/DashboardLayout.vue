@@ -8,6 +8,7 @@
         <sidebar-link to="/newsmanagement" :name="$t('Quản lý tin tức')" icon="tim-icons icon-bell-55"/>
         <sidebar-link to="/guidebookmanagement" :name="$t('Quản lý cẩm nang')" icon="tim-icons icon-single-02"/>
         <sidebar-link to="/approvepost" :name="$t('Duyệt bài đăng')" icon="tim-icons icon-single-02"/>
+        <!-- <sidebar-link to="/newsdetail" :name="$t('Duyệt bài đăng')" icon="tim-icons icon-single-02"/> -->
         <!-- <sidebar-link to="/notifications" :name="$t('Duyệt bài đăng2')" icon="tim-icons icon-single-02"/> -->
         <sidebar-link to="/profile" :name="$t('profile')" icon="tim-icons icon-badge"/>
       </template>

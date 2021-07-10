@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -18,9 +17,20 @@ export default new Vuex.Store({
       imageURL:"",
       phonenumber:""
     },
-
+    NewsId: "",
+    GuidebookId: "",
+    ChildId: "",
   },
   getters: {
+    getChildId: state =>{
+      return state.ChildId
+    },
+    getNewsId: state =>{
+      return state.NewsId
+    },
+    getGuidebookId: state =>{
+      return state.GuidebookId
+    },
     getFullname: state => {
       return state.userInfo.fullname
     },
@@ -61,7 +71,16 @@ export default new Vuex.Store({
     },
     setUserInfo1(state,payload){
       state.userInfo1=payload;
-    }
+    },
+    setId(state,payload){
+      state.NewsId=payload;
+    },
+    setGuidebookId(state,payload){
+      state.GuidebookId=payload;
+    },
+    setChildId(state,payload){
+      state.ChildId=payload;
+    },
   },
   actions: {
   },

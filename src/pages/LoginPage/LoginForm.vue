@@ -87,6 +87,7 @@ export default {
           );
           let user = loginResult.data.data;
           localStorage.setItem("userInfo", JSON.stringify(user));
+          let userInfo = JSON.parse(localStorage.getItem("userInfo"));
           if (loginResult.data.data.role === "role01") {
             _this.$message({
               type: "warning",
@@ -96,6 +97,10 @@ export default {
             this.$router.push({
               name: "dashboard",
             });
+            // let tokenResult = await axios.get(
+            //   `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/Token/GetTokenBy/${userInfo.id}`
+            // );
+            // localStorage.setItem("tokenInfo", JSON.stringify(tokenResult));
           }
         });
     },

@@ -5,46 +5,28 @@
       :data="searchResult ? searchResult : tableData"
       style="width: 100%"
     >
-      <el-table-column label="Id" :min-width="50">
+      <el-table-column label="Id" width="50">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Nội dung" :min-width="110">
+      <el-table-column label="Người tạo" width="100">
+        <template slot-scope="scope">
+          <span>{{ scope.row.createdBy }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="Hình ảnh" prop="image" width="200">
+        <template slot-scope="scope">
+          <img
+            v-if="scope.row.imageURL != ''"
+            :src="scope.row.imageURL"
+            style="height: 150px; width: 300px"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column label="Nội dung" width="650">
         <template slot-scope="scope">
           <span>{{ scope.row.diaryContent }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Hình ảnh" prop="image" :min-width="80">
-        <template slot-scope="scope">
-          <el-button size="mini" @click="handleImage(scope.row.image)"
-            >Hiển thị</el-button
-          >
-          <el-dialog title="Hình ảnh" :visible.sync="imageDialogVisible">
-            <el-form :model="dialogImage">
-              <el-form-item>
-                <el-image
-                  style="width: 100%"
-                  :fit="fit"
-                  v-if="dialogImage.imageUrl === ''"
-                >
-                  <div slot="error" class="image-slot text-center">
-                    <i
-                      style="font-size: 3rem"
-                      class="el-icon-picture-outline"
-                    ></i>
-                  </div>
-                </el-image>
-
-                <img style="width: 100%" :src="dialogImage.imageUrl" />
-              </el-form-item>
-            </el-form>
-          </el-dialog>
-        </template>
-      </el-table-column>
-      <el-table-column label="ChildId" :min-width="130">
-        <template slot-scope="scope">
-          <span>{{ scope.row.childId }}</span>
         </template>
       </el-table-column>
       <el-table-column align="right">
@@ -57,13 +39,23 @@
           />
         </template>
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleApprove(scope.$index, scope.row)"
+          <!-- <el-button
+            size="mini"
+            type="primary"
+            @click="viewDetail(scope.$index, scope.row)"
+            style="margin-left: 10px"
+            >Xem chi tiết</el-button> -->
+          <el-button
+            size="mini"
+            @click="handleApprove(scope.$index, scope.row)"
+            :disabled="disabledFlag"
             >Duyệt</el-button
           >
           <el-button
             size="mini"
             type="danger"
             @click="handleDeny(scope.$index, scope.row)"
+            :disabled="disabledFlag"
             style="margin-left: 10px"
             >Không duyệt</el-button
           >
@@ -114,17 +106,13 @@ export default {
       totalPages: 0,
       searchResult: null,
       rsPage: 0,
+      disabledFlag: false,
     };
   },
   created: function () {
-    const req = Request({
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-    });
     axios
       .get(
-        `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/Diaries/GetDiaryPublic`
+        `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/Diaries/GetDiaryToApprove`
       )
       .then((rs) => {
         this.tableData = rs.data.data;
@@ -161,15 +149,17 @@ export default {
       let diaryId = this.tableData[this.editedIndex].id;
       let childIdApprove = this.tableData[this.editedIndex].childId;
       let content = this.tableData[this.editedIndex].diaryContent;
+      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
       await axios
         .put(
           `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/Diaries/UpdateDiary/${diaryId}?childID=${childIdApprove}`,
           {
             id: diaryId,
-            isApproved: true,
-            isPublic: true,
+            approvedFlag: true,
+            publicFlag: true,
             diaryContent: content,
             childId: childIdApprove,
+            lastModifiedBy: userInfo.id
           }
         )
         .then((rs) => {
@@ -177,6 +167,17 @@ export default {
             type: "success",
             message: `Duyệt bài đăng id{${diaryId}} thành công !`,
           });
+        });
+      await axios
+        .get(
+          `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/Diaries/GetDiaryToApprove`
+        )
+        .then((rs) => {
+          this.tableData = rs.data.data;
+        })
+        .catch((e) => {
+          console.error(e);
+          console.log(e);
         });
     },
     readAsync(blob) {
@@ -222,20 +223,46 @@ export default {
       this.addNews.image = "";
     },
     async handleDeny(index, row) {
+      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
       this.editedIndex = this.tableData.indexOf(row);
       let diaryId = this.tableData[this.editedIndex].id;
       let childIdApprove = this.tableData[this.editedIndex].childId;
       let content = this.tableData[this.editedIndex].diaryContent;
-      await axios.put(
-        `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/Diaries/UpdateDiary/${diaryId}?childID=${childIdApprove}`,
-        {
-          id: diaryId,
-          isApproved: false,
-          isPublic: false,
-          diaryContent: content,
-          childId: childIdApprove,
-        }
-      );
+      await axios
+        .put(
+          `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/Diaries/UpdateDiary/${diaryId}?childID=${childIdApprove}`,
+          {
+            id: diaryId,
+            approvedFlag: false,
+            publicFlag: false,
+            diaryContent: content,
+            childId: childIdApprove,
+            lastModifiedBy: userInfo.id
+          }
+        )
+        .then((rs) => {
+          this.$message({
+            type: "success",
+            message: `Không duyệt bài đăng id{${diaryId}} thành công !`,
+          });
+        });
+      await axios
+        .get(
+          `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/Diaries/GetDiaryToApprove`
+        )
+        .then((rs) => {
+          this.tableData = rs.data.data;
+        })
+        .catch((e) => {
+          console.error(e);
+          console.log(e);
+        });
+    },
+    viewDetail(index, row) {
+      localStorage.setItem("ChildId", row.childId);
+      this.$router.push({
+        name: "NHẬT KÝ CHI TIẾT",
+      });
     },
     async onSearchInput(e) {
       if (this.search === "") {

@@ -48,7 +48,11 @@ Vue.prototype.$messaging = firebaseMessaging
 Vue.use(VueAxios,axios);
 
 import Repository from "./services/repositories/RepositoryFactory";
+// import CKEditor from 'ckeditor4-vue';
+import CKEditor from '@ckeditor/ckeditor5-vue2';
 
+// Vue.use( CKEditor );
+Vue.use(CKEditor)
 Vue.prototype.$repository=Repository;
 Vue.use(Router)
 Vue.use(BlackDashboard);
