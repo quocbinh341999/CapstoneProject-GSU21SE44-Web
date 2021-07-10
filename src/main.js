@@ -27,6 +27,7 @@ import { faFontAwesome } from "@fortawesome/free-brands-svg-icons";
 import store from "./store";
 import Router from 'vue-router'
 import "firebase/auth";
+
 library.add(faFontAwesome);
 // register component
 Vue.component("font-awesome-icon", FontAwesomeIcon);
@@ -40,10 +41,18 @@ import "./registerServiceWorker";
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import locale from 'element-ui/lib/locale/lang/en'
+
+import firebaseMessaging from './services/repositories/firebase'
+
+Vue.prototype.$messaging = firebaseMessaging
 Vue.use(VueAxios,axios);
 
 import Repository from "./services/repositories/RepositoryFactory";
+// import CKEditor from 'ckeditor4-vue';
+import CKEditor from '@ckeditor/ckeditor5-vue2';
 
+// Vue.use( CKEditor );
+Vue.use(CKEditor)
 Vue.prototype.$repository=Repository;
 Vue.use(Router)
 Vue.use(BlackDashboard);
@@ -51,7 +60,7 @@ Vue.use(VueRouter);
 Vue.use(RouterPrefetch);
 Vue.use(ElementUI,{locale});
 Vue.config.productionTip = false
-firebase.initializeApp(firebaseConfig);
+// firebase.initializeApp(firebaseConfig);
 
 /* eslint-disable no-new */
 new Vue({

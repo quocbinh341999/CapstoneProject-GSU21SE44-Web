@@ -1,22 +1,29 @@
 <template>
   <div>
-    <h1>QUẢN LÝ TIN TỨC</h1>
+    <h1 style="color: #909399">QUẢN LÝ TIN TỨC</h1>
     <el-button
       type="primary"
       @click="dialogFormAddVisible = true"
-      style="margin-bottom: 15px"
+      style="margin-bottom: 15px; color: #909399"
       plain
       >Thêm tin mới</el-button
     >
-    <el-dialog title="Thêm tin mới" :visible.sync="dialogFormAddVisible">
-      <el-form :model="addNews">
+    <el-dialog
+      title="Thêm tin mới"
+      :visible.sync="dialogFormAddVisible"
+      :lock-scroll="true"
+      width="80%"
+    >
+      <el-form
+        :model="addNews"
+        status-icon
+        :rules="rules"
+        ref="addNews"
+        class="demo-ruleForm"
+      >
         <el-row type="flex" class="row-bg" justify="center">
-          <el-form-item style="width: 50%">
-            <el-image
-              style="width: 100%"
-              :fit="fit"
-              v-if="addNews.imageUrl === ''"
-            >
+          <el-form-item style="width: 50%" prop="imageUrl">
+            <el-image style="width: 100%" v-if="addNews.imageUrl === ''">
               <div slot="error" class="image-slot text-center">
                 <i style="font-size: 3rem" class="el-icon-picture-outline"></i>
               </div>
@@ -41,7 +48,7 @@
               "
               >Selected image: {{ uploadingImage.name }}</span
             >
-            <span v-else style="cursor: pointer">Select File</span>
+            <span v-else style="cursor: pointer">Chọn File</span>
           </div>
           <!-- Now, the file input that we hide. -->
           <input
@@ -53,17 +60,43 @@
             v-on:change="handleFileChangeOnCreateNews"
           />
         </label>
-        <el-form-item label="Title" :label-width="formLabelWidth">
+        <el-form-item
+          label="Tiêu đề"
+          :label-width="formLabelWidth"
+          prop="newsTitle"
+        >
           <el-input v-model="addNews.newsTitle" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="News Content" :label-width="formLabelWidth">
-          <el-input v-model="addNews.NewsContent" autocomplete="off"></el-input>
+        <el-form-item
+          label="Nội dung"
+          :label-width="formLabelWidth"
+          prop="NewsContent"
+        >
+          <!-- <el-input
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 4 }"
+            v-model="addNews.NewsContent"
+          >
+          </el-input> -->
+          <mumbi-editor v-model="addNews.NewsContent"></mumbi-editor>
         </el-form-item>
-        <el-form-item label="Type" :label-width="formLabelWidth">
+        <el-form-item
+          label="Thời gian đọc"
+          :label-width="formLabelWidth"
+          prop="estimateTime"
+        >
+          <el-input v-model.number="addNews.estimateTime"></el-input>
+        </el-form-item>
+        <el-form-item
+          label="Loại tin tức"
+          :label-width="formLabelWidth"
+          prop="typeName"
+        >
           <el-select
             v-model="addNews.typeName"
-            placeholder="Please select a type"
+            placeholder="Vui lòng lựa chọn loại tin tức"
             style="float: left"
+            :min-width="180"
           >
             <el-option
               v-for="item in listtype"
@@ -75,59 +108,47 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormAddVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="confirmAdd()">Confirm</el-button>
+        <el-button @click="cancel('addNews')">Hủy bỏ</el-button>
+        <el-button type="primary" @click="confirmAdd('addNews')"
+          >Xác nhận</el-button
+        >
       </span>
     </el-dialog>
     <el-table
       :data="searchResult ? searchResult : tableData"
       style="width: 100%"
     >
-      <el-table-column label="Id" width="260px">
+      <el-table-column label="STT" type="index" width="60"> </el-table-column>
+      <el-table-column label="Hình ảnh" prop="image" width="200">
         <template slot-scope="scope">
-          <span>{{ scope.row.id }}</span>
+          <img
+            v-if="scope.row.imageURL != ''"
+            :src="scope.row.imageURL"
+            style="height: 150px; width: 300px"
+          />
         </template>
       </el-table-column>
-      <el-table-column label="Title" width="260px">
+      <el-table-column label="Tiêu đề" width="240">
         <template slot-scope="scope">
           <span>{{ scope.row.title }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Content" :min-width="120">
+      <!-- <el-table-column label="Nội dung" :min-width="150"> -->
+      <!-- <template slot-scope="scope"> -->
+      <!-- <a href={{ scope.row.newsContent }}></a> -->
+      <!-- <a :href="scope.row.newsContent" target="_blank" download=""
+            ><span v-html="scope.row.newsContent"></span
+          ></a> -->
+      <!-- </template> -->
+      <!-- </el-table-column> -->
+      <el-table-column label="Loại tin tức" :min-width="60">
         <template slot-scope="scope">
-          <span>{{ scope.row.newsContent }}</span>
+          <span>{{ scope.row.type }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Type" width="100px">
+      <el-table-column label="Thời gian đọc" :min-width="60">
         <template slot-scope="scope">
-          <span>{{ scope.row.typeId }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Image" prop="image">
-        <template slot-scope="scope">
-          <el-button size="mini" @click="handleImage(scope.row.image)"
-            >Show</el-button
-          >
-          <el-dialog title="User Image" :visible.sync="imageDialogVisible">
-            <el-form :model="dialogImage">
-              <el-form-item>
-                <el-image
-                  style="width: 100%"
-                  :fit="fit"
-                  v-if="dialogImage.imageUrl === ''"
-                >
-                  <div slot="error" class="image-slot text-center">
-                    <i
-                      style="font-size: 3rem"
-                      class="el-icon-picture-outline"
-                    ></i>
-                  </div>
-                </el-image>
-
-                <img style="width: 100%" :src="dialogImage.imageUrl" />
-              </el-form-item>
-            </el-form>
-          </el-dialog>
+          <span>{{ scope.row.estimateFinishTime }}</span>
         </template>
       </el-table-column>
       <el-table-column align="right">
@@ -140,18 +161,30 @@
           />
         </template>
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
-            >Edit</el-button
+          <el-button
+            size="mini"
+            type="primary"
+            @click="viewDetail(scope.$index, scope.row)"
+            style="margin-left: 10px"
+            >Xem chi tiết</el-button
           >
-          <el-dialog title="News Detail" :visible.sync="dialogFormVisible">
-            <el-form :model="form">
+          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
+            >Chỉnh sửa</el-button
+          >
+          <el-dialog
+            :visible.sync="dialogFormVisible"
+            :lock-scroll="true"
+            width="60%"
+          >
+            <el-form
+              :model="form"
+              :rules="rulesForm"
+              ref="form"
+              class="demo-ruleForm"
+            >
               <el-row type="flex" class="row-bg" justify="center">
                 <el-form-item style="width: 50%">
-                  <el-image
-                    style="width: 100%"
-                    :fit="fit"
-                    v-if="form.imageUrl === ''"
-                  >
+                  <el-image style="width: 100%" v-if="form.imageUrl === ''">
                     <div slot="error" class="image-slot text-center">
                       <i
                         style="font-size: 3rem"
@@ -160,7 +193,7 @@
                     </div>
                   </el-image>
 
-                  <img style="width: 100%" :src="form.imageUrl" />
+                  <img :src="form.imageUrl" />
                 </el-form-item>
               </el-row>
               <label class="file-select" style="margin-left: 80%">
@@ -179,7 +212,7 @@
                     "
                     >Selected image: {{ uploadingImage.name }}</span
                   >
-                  <span v-else style="cursor: pointer">Select File</span>
+                  <span v-else style="cursor: pointer">Chọn File</span>
                 </div>
                 <!-- Now, the file input that we hide. -->
                 <input
@@ -191,19 +224,33 @@
                   v-on:change="handleFileChange"
                 />
               </label>
-              <el-form-item label="Title" :label-width="formLabelWidth">
+              <el-form-item label="Tiêu đề" :label-width="formLabelWidth">
                 <el-input v-model="form.title" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="News Content" :label-width="formLabelWidth">
-                <el-input
+              <el-form-item label="Nội dung" :label-width="formLabelWidth">
+                <!-- <el-input
+                  type="textarea"
+                  :autosize="{ minRows: 2, maxRows: 4 }"
                   v-model="form.NewsContent"
+                >
+                </el-input> -->
+                <!-- <ckeditor v-model="form.NewsContent" :config="editorConfig"></ckeditor> -->
+                <mumbi-editor v-model="form.NewsContent"></mumbi-editor>
+              </el-form-item>
+              <el-form-item
+                label="Thời gian đọc"
+                :label-width="formLabelWidth"
+                prop="estimateTime1"
+              >
+                <el-input
+                  v-model.number="form.estimateTime1"
                   autocomplete="off"
                 ></el-input>
               </el-form-item>
-              <el-form-item label="Type" :label-width="formLabelWidth">
+              <el-form-item label="Loại tin tức" :label-width="formLabelWidth">
                 <el-select
                   v-model="form.typeName"
-                  placeholder="Please select a type"
+                  placeholder="Vui lòng lựa chọn loại tin tức"
                   style="float: left"
                 >
                   <el-option
@@ -216,11 +263,11 @@
               </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-              <el-button @click="dialogFormVisible = false">Cancel</el-button>
+              <el-button @click="dialogFormVisible = false">Hủy bỏ</el-button>
               <el-button
                 type="primary"
-                @click="confirm(scope.$index, scope.row)"
-                >Confirm</el-button
+                @click="confirm(scope.$index, scope.row, 'form')"
+                >Xác nhận</el-button
               >
             </span>
           </el-dialog>
@@ -229,7 +276,7 @@
             type="danger"
             @click="handleDelete(scope.$index, scope.row)"
             style="margin-left: 10px"
-            >Delete</el-button
+            >Xóa</el-button
           >
         </template>
       </el-table-column>
@@ -260,10 +307,70 @@ import * as firebase from "firebase/app";
 import "firebase/firebase-storage";
 import Request from "../services/RequestBase.js";
 import baseConfig from "../config";
+import CkEditor from "../components/Inputs/CkEditor.vue";
 const backendIp = baseConfig.backendIp;
 export default {
+  components: {
+    "mumbi-editor": CkEditor,
+  },
   data() {
+    var checkTime = (rule, value, callback) => {
+      if (!value) {
+        return callback(
+          new Error("Vui lòng nhập thời gian để đọc hết tin tức !")
+        );
+      }
+      setTimeout(() => {
+        if (!Number.isInteger(value)) {
+          callback(new Error("Thời gian đọc hết tin tức phải là một số !"));
+        } else {
+          if (value < 0) {
+            callback(new Error("Thời gian đọc hết tin tức phải lớn hơn 0 !"));
+          } else {
+            callback();
+          }
+        }
+      }, 1000);
+    };
+    var checkTitle = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("Vui lòng nhập tiêu đề !"));
+      } else {
+        callback();
+      }
+    };
+    var checkContent = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("Vui lòng nhập nội dung !"));
+      } else {
+        callback();
+      }
+    };
+    var checkImg = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("Vui lòng chọn hình ảnh !"));
+      } else {
+        callback();
+      }
+    };
+    var checkType = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("Vui lòng chọn loại tin tức !"));
+      } else {
+        callback();
+      }
+    };
     return {
+      rules: {
+        estimateTime: [{ validator: checkTime, trigger: "blur" }],
+        NewsContent: [{ validator: checkContent, trigger: "blur" }],
+        newsTitle: [{ validator: checkTitle, trigger: "blur" }],
+        imageUrl: [{ validator: checkImg, trigger: "blur" }],
+        typeName: [{ validator: checkType, trigger: "blur" }],
+      },
+      rulesForm: {
+        estimateTime1: [{ validator: checkTime, trigger: "blur" }],
+      },
       tableData: [],
       dialogFormVisible: false,
       dialogFormAddVisible: false,
@@ -275,6 +382,7 @@ export default {
         NewsContent: "",
         imageUrl: "",
         title: "",
+        estimateTime1: "",
       },
       addNews: {
         NewsContent: "",
@@ -282,6 +390,8 @@ export default {
         imageUrl: "",
         imageFile: "",
         newsTitle: "",
+        estimateTime: "",
+        typeName: "",
       },
       uploadingImage: "",
       formLabelWidth: "120px",
@@ -294,6 +404,10 @@ export default {
       totalPages: 0,
       searchResult: null,
       rsPage: 0,
+      editorData: "<p>Content of the editor.</p>",
+      editorConfig: {
+        // The configuration of the editor.
+      },
     };
   },
   created: function () {
@@ -353,63 +467,87 @@ export default {
       this.form.title = row.title;
       this.form.NewsContent = row.newsContent;
       this.form.typeName = row.typeId;
-      this.form.imageUrl = row.image;
+      this.form.imageUrl = row.imageURL;
+      this.form.estimateTime1 = row.estimateFinishTime;
     },
-    async confirm(index, row) {
-      this.dialogFormVisible = false;
-      let NewsId = this.tableData[this.editedIndex].id;
-      try {
-        if (this.form.imageFile) {
-          var ref = firebase
-            .storage()
-            .refFromURL("gs://mumbi-app-84d15.appspot.com")
-            .child(`News/${this.form.imageFile.name}`);
+    async confirm(index, row, formName) {
+      this.$refs[formName].validate(async (valid) => {
+        if (valid) {
+          let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+          this.dialogFormVisible = false;
+          let NewsId = this.tableData[this.editedIndex].id;
+          try {
+            if (this.form.imageFile) {
+              var ref = firebase
+                .storage()
+                .refFromURL("gs://mumbi-app-84d15.appspot.com")
+                .child(`News/${this.form.imageFile.name}`);
 
-          await ref.put(this.form.imageFile);
-          let imageUrl1 = await ref.getDownloadURL();
-          await axios.put(
-            `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/News/UpdateNews/` +
-              NewsId,
-            {
-              id: NewsId,
-              title: this.form.title,
-              newsContent: this.form.NewsContent,
-              image: imageUrl1,
-              typeId: this.form.typeName,
+              await ref.put(this.form.imageFile);
+              let imageUrl1 = await ref.getDownloadURL();
+              await axios.put(
+                `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/News/UpdateNews/` +
+                  NewsId,
+                {
+                  id: NewsId,
+                  title: this.form.title,
+                  newsContent: this.form.NewsContent,
+                  imageURL: imageUrl1,
+                  typeId: this.form.typeName,
+                  estimateFinishTime: this.form.estimateTime1,
+                  lastModifiedBy: userInfo.id,
+                }
+              );
+              await axios
+                .get(
+                  `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/News/GetAllNews`
+                )
+                .then((rs) => {
+                  this.tableData = rs.data.data;
+                })
+                .catch((e) => {
+                  console.error(e);
+                  console.log(e);
+                });
+            } else {
+              await axios.put(
+                `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/News/UpdateNews/` +
+                  NewsId,
+                {
+                  imageURL: this.form.imageUrl,
+                  id: NewsId,
+                  title: this.form.title,
+                  newsContent: this.form.NewsContent,
+                  typeId: this.form.typeName,
+                  estimateFinishTime: this.form.estimateTime1,
+                  lastModifiedBy: userInfo.id,
+                }
+              );
+              await axios
+                .get(
+                  `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/News/GetAllNews`
+                )
+                .then((rs) => {
+                  this.tableData = rs.data.data;
+                })
+                .catch((e) => {
+                  console.error(e);
+                  console.log(e);
+                });
             }
-          );
-          this.tableData[this.editedIndex].title = this.form.title;
-          this.tableData[this.editedIndex].newsContent = this.form.NewsContent;
-          this.tableData[this.editedIndex].typeId = this.form.typeName;
-          this.tableData[this.editedIndex].image = this.form.imageUrl;
-        } else {
-          await axios.put(
-            `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/News/UpdateNews/` +
-              NewsId,
-            {
-              image: this.form.imageUrl,
-              id: NewsId,
-              title: this.form.title,
-              newsContent: this.form.NewsContent,
-              typeId: this.form.typeName,
-            }
-          );
-          this.tableData[this.editedIndex].image = this.form.imageUrl;
-          this.tableData[this.editedIndex].title = this.form.title;
-          this.tableData[this.editedIndex].newsContent = this.form.NewsContent;
-          this.tableData[this.editedIndex].typeId = this.form.typeId;
+
+            this.$message({
+              message: `Cập nhật tin tức thành công !`,
+              type: "success",
+            });
+          } catch (e) {
+            console.log(e);
+            this.$message({
+              message: `Cập nhật tin tức không thành công ! `,
+            });
+          }
         }
-
-        this.$message({
-          message: `Update News ${NewsId} successfully`,
-          type: "success",
-        });
-      } catch (e) {
-        console.log(e);
-        this.$message({
-          message: `Fail to update News ${NewsId} `,
-        });
-      }
+      });
     },
     readAsync(blob) {
       return new Promise((resolve, reject) => {
@@ -423,63 +561,71 @@ export default {
         reader.readAsDataURL(blob);
       });
     },
-    async confirmAdd() {
-      this.dialogFormAddVisible = false;
+    async confirmAdd(formName) {
+      this.$refs[formName].validate(async (valid) => {
+        if (valid) {
+          let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+          this.dialogFormAddVisible = false;
+          let type = this.addNews.typeName;
+          let NewsContent = this.addNews.NewsContent;
+          let titleNews = this.addNews.newsTitle;
+          let time = this.addNews.estimateTime;
+          try {
+            if (this.addNews.imageFile) {
+              var ref = firebase
+                .storage()
+                .refFromURL("gs://mumbi-app-84d15.appspot.com")
+                .child(`News/${this.addNews.imageFile.name}`);
 
-      let type = this.addNews.typeName;
-      let NewsContent = this.addNews.NewsContent;
-      let titleNews = this.addNews.newsTitle;
+              await ref.put(this.addNews.imageFile);
+              let imageUrl = await ref.getDownloadURL();
 
-      try {
-        if (this.addNews.imageFile) {
-          var ref = firebase
-            .storage()
-            .refFromURL("gs://mumbi-app-84d15.appspot.com")
-            .child(`News/${this.addNews.imageFile.name}`);
-
-          await ref.put(this.addNews.imageFile);
-          let imageUrl = await ref.getDownloadURL();
-
-          await axios.post(
-            `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/News/AddNews`,
-            {
-              title: titleNews,
-              newsContent: NewsContent,
-              image: imageUrl,
-              typeId: type,
+              await axios.post(
+                `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/News/AddNews`,
+                {
+                  title: titleNews,
+                  newsContent: NewsContent,
+                  imageURL: imageUrl,
+                  typeId: type,
+                  estimateFinishTime: time,
+                  createdBy: userInfo.id,
+                }
+              );
+            } else {
+              await axios.post(
+                `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/News/AddNews`,
+                {
+                  title: titleNews,
+                  newsContent: NewsContent,
+                  typeId: type,
+                  estimateFinishTime: time,
+                  createdBy: userInfo.id,
+                }
+              );
             }
-          );
-        } else {
-          await axios.post(
-            `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/News/AddNews`,
-            {
-              title: titleNews,
-              newsContent: NewsContent,
-              typeId: type,
-            }
-          );
-        }
-        this.$message({
-          type: "success",
-          message: `Create new News successfully!`,
-        });
-        axios
-          .get(
-            `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/News/GetAllNews`
-          )
-          .then((rs) => {
-            this.tableData = rs.data.data;
-          })
-          .catch((e) => {
-            console.error(e);
+            this.$message({
+              type: "success",
+              message: `Tạo tin tức thành công !`,
+            });
+            await axios
+              .get(
+                `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/News/GetAllNews`
+              )
+              .then((rs) => {
+                this.tableData = rs.data.data;
+              })
+              .catch((e) => {
+                console.error(e);
+                console.log(e);
+              });
+          } catch (e) {
             console.log(e);
-          });
-      } catch (e) {
-        console.log(e);
-        this.$message({
-          message: `Fail to create new News`,
-        });
-      }
+            this.$message({
+              message: `Tạo tin tức không thành công !`,
+            });
+          }
+        }
+      });
     },
     async handleFileChange() {
       let file = this.$refs.Newsimageupload.files[0];
@@ -516,19 +662,15 @@ export default {
       this.$msgbox({
         title: "Warning",
         message: h("p", null, [
-          h(
-            "span",
-            { style: "color: black" },
-            "This will permanently delete this news. Are you sure ? "
-          ),
+          h("span", { style: "color: black" }, "Bạn có chắc chắn muốn xóa ? "),
         ]),
         showCancelButton: true,
-        confirmButtonText: "OK",
-        cancelButtonText: "Cancel",
+        confirmButtonText: "Xác nhận",
+        cancelButtonText: "Hủy bỏ",
         beforeClose: (action, instance, done) => {
           if (action === "confirm") {
             instance.confirmButtonLoading = true;
-            instance.confirmButtonText = "Loading...";
+            instance.confirmButtonText = "Đang chờ...";
             setTimeout(() => {
               done();
               setTimeout(() => {
@@ -555,8 +697,14 @@ export default {
       }).then((action) => {
         this.$message({
           type: "success",
-          message: "Delete completed",
+          message: "Xóa thành công !",
         });
+      });
+    },
+    viewDetail(index, row) {
+      localStorage.setItem("NewsId", row.id);
+      this.$router.push({
+        name: "TIN TỨC CHI TIẾT",
       });
     },
     async onSearchInput(e) {
@@ -574,6 +722,21 @@ export default {
         console.log(error);
       }
     },
+    cancel(formName) {
+      this.$refs[formName].resetFields();
+      this.dialogFormAddVisible = false;
+    },
   },
 };
 </script>
+<style>
+p {
+  color: #606266;
+}
+.el-table td {
+  text-align: center;
+}
+.el-table th {
+  text-align: center;
+}
+</style>

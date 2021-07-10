@@ -74,22 +74,33 @@ export default {
         .signInWithPopup(provider)
         .then(async (result) => {
           let token = await result.user.getIdToken();
+          let token2 = await this.$messaging.getToken({
+            vapidKey:
+              "BNN2j64Wo_Ma8G7ElOgRnFH-k9raFwK4jbdOyTJ6BkRPHrI6FXdALMMlKz93x1rSbptR7_ogIHI0yeKLRwnUxVU",
+          });
           let loginResult = await axios.post(
-            `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/Accounts/Authenticate`,
+            `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/Authentication/Authenticate`,
             {
               idToken: token,
+              fcmToken: token2,
             }
           );
-          console.log(loginResult);
+          let user = loginResult.data.data;
+          localStorage.setItem("userInfo", JSON.stringify(user));
+          let userInfo = JSON.parse(localStorage.getItem("userInfo"));
           if (loginResult.data.data.role === "role01") {
             _this.$message({
               type: "warning",
-              message: "You do not have permission to log in.",
+              message: "Bạn không được phép đăng nhập vào trang web !",
             });
-          } else {
-            _this.$router.replace({
+          } else if (loginResult.data.data.role === "role02") {
+            this.$router.push({
               name: "dashboard",
             });
+            // let tokenResult = await axios.get(
+            //   `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/Token/GetTokenBy/${userInfo.id}`
+            // );
+            // localStorage.setItem("tokenInfo", JSON.stringify(tokenResult));
           }
         });
     },

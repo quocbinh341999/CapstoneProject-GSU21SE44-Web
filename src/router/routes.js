@@ -20,8 +20,12 @@ const UserGM = () => import(/* webpackChunkName: "common" */ "@/pages/UserGM.vue
 const EventGM = () => import(/* webpackChunkName: "common" */ "@/pages/EventGM.vue");
 const PostGM = () => import(/* webpackChunkName: "common" */ "@/pages/PostGM.vue");
 const GuidebookManagement = () => import(/* webpackChunkName: "common" */ "@/pages/GuidebookManagement.vue");
+const ApprovePost = () => import(/* webpackChunkName: "common" */ "@/pages/AprovePost.vue");
 const EditProfile = () => import(/* webpackChunkName: "common" */ "@/pages/Profile/EditProfileForm.vue")
 const NotificationManagement = () => import(/* webpackChunkName: "common" */ "@/pages/NotificationManagement.vue")
+const NewsDetail = () => import(/* webpackChunkName: "common" */ "@/pages/NewsDetail.vue")
+const GuidebookDetail = () => import(/* webpackChunkName: "common" */ "@/pages/GuidebookDetail.vue")
+const DiaryDetail = () => import(/* webpackChunkName: "common" */ "@/pages/DiaryDetail.vue")
 const routes = [
   {
     path: "/",
@@ -35,33 +39,33 @@ const routes = [
       },
     ]
   },
-  {
-    path: "/dashboardGM",
-    component: DashboardGroupManager,
-    redirect: "/eventGM",
-    children: [
-      // {
-      //   path: "/userGM",
-      //   name: "userGM",
-      //   component: UserGM
-      // },
-      {
-        path: "/eventGM",
-        name: "eventGM",
-        component: EventGM
-      },
-      {
-        path: "/postGM",
-        name: "postGM",
-        component: PostGM
-      },
-      {
-        path: "/myprofile",
-        name: "myprofile",
-        component: Profile
-      },
-    ]
-  },
+  // {
+  //   path: "/dashboardGM",
+  //   component: DashboardGroupManager,
+  //   redirect: "/eventGM",
+  //   children: [
+  //     // {
+  //     //   path: "/userGM",
+  //     //   name: "userGM",
+  //     //   component: UserGM
+  //     // },
+  //     {
+  //       path: "/eventGM",
+  //       name: "eventGM",
+  //       component: EventGM
+  //     },
+  //     {
+  //       path: "/postGM",
+  //       name: "postGM",
+  //       component: PostGM
+  //     },
+  //     {
+  //       path: "/myprofile",
+  //       name: "myprofile",
+  //       component: Profile
+  //     },
+  //   ]
+  // },
   {
     path: "/dashboard",
     component: DashboardLayout,
@@ -74,7 +78,7 @@ const routes = [
       },
       {
         path: "/profile",
-        name: "profile",
+        name: "PROFILE",
         component: Profile
       },
       {
@@ -104,7 +108,7 @@ const routes = [
       },
       {
         path: "/usermanagement",
-        name: "usermanagement",
+        name: "QUẢN LÝ NGƯỜI DÙNG",
         component: UserManagement
       },
       {
@@ -114,18 +118,33 @@ const routes = [
       },
       {
         path: "/newsmanagement",
-        name: "newsmanagement",
+        name: "QUẢN LÝ TIN TỨC",
         component: NewsManagement
       },
       {
         path: "/guidebookmanagement",
-        name: "guidebookmanagement",
+        name: "QUẢN LÝ CẨM NANG",
         component: GuidebookManagement
       },
       {
-        path: "/notificationmanagement",
-        name: "notificationmanagement",
-        component: NotificationManagement
+        path: "/approvepost",
+        name: "DUYỆT BÀI ĐĂNG",
+        component: ApprovePost
+      },
+      {
+        path: "/newsdetail",
+        name: "TIN TỨC CHI TIẾT",
+        component: NewsDetail
+      },
+      {
+        path: "/guidebookdetail",
+        name: "CẨM NANG CHI TIẾT",
+        component: GuidebookDetail
+      },
+      {
+        path: "/diarydetail",
+        name: "NHẬT KÝ CHI TIẾT",
+        component: DiaryDetail
       }
     ]
   },
