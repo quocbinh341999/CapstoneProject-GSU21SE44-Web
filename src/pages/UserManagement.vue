@@ -5,7 +5,7 @@
       :data="searchResult ? searchResult : tableData"
       style="width: 100%"
     >
-      <el-table-column label="STT" type="index" width="50"> </el-table-column>
+      <el-table-column label="STT" type="index" width="60"> </el-table-column>
       <el-table-column label="Hình ảnh" prop="image" width="200">
         <template slot-scope="scope">
           <img
@@ -15,17 +15,17 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="Họ tên" width="210">
+      <el-table-column label="Họ tên" width="220">
         <template slot-scope="scope">
           <span>{{ scope.row.fullName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Số điện thoại" width="100">
+      <el-table-column label="Số điện thoại" width="120">
         <template slot-scope="scope">
           <span>{{ scope.row.phonenumber }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Email" width="210">
+      <el-table-column label="Email" width="220">
         <template slot-scope="scope">
           <span>{{ scope.row.email }}</span>
         </template>
@@ -40,6 +40,63 @@
           />
         </template>
         <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="primary"
+            @click="viewDetail(scope.$index, scope.row)"
+            style="margin-left: 10px"
+            >Xem chi tiết</el-button
+          >
+          <el-dialog :visible.sync="dialogFormVisible1" width="55%">
+            <label
+              v-if="tableData2 != null"
+              style="float: left; font-weight: bold"
+              >Trạng thái: {{ tableData1.message }}</label
+            >
+            <el-table
+              v-if="tableData2 != null"
+              :data="tableData2"
+              stripe
+            >
+              <el-table-column label="STT" type="index" width="60">
+              </el-table-column>
+              <el-table-column label="Hình ảnh" prop="image" width="200">
+                <template slot-scope="scope">
+                  <img
+                    v-if="scope.row.imageURL != ''"
+                    :src="scope.row.imageURL"
+                    style="height: 150px; width: 250px"
+                  />
+                </template>
+              </el-table-column>
+              <el-table-column label="Họ và tên" width="200">
+                <template slot-scope="scope">
+                  <span>{{ scope.row.fullName }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="Giới tính" width="100">
+                <template slot-scope="scope">
+                  <span>{{ scope.row.gender }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="Ngày dự sinh" width="100">
+                <template slot-scope="scope">
+                  <span>{{ scope.row.estimatedBornDate }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="Trạng thái" width="100">
+                <template slot-scope="scope">
+                  <span>{{
+                    scope.row.bornFlag === true
+                      ? "Em bé"
+                      : scope.row.bornFlag === false
+                      ? "Thai nhi"
+                      : ""
+                  }}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-dialog>
           <el-button
             size="mini"
             type="danger"
@@ -86,6 +143,9 @@ export default {
       tableData: [],
       dialogImage: { imageUrl: "" },
       dialogFormVisible: false,
+      dialogFormVisible1: false,
+      tableData1: [],
+      tableData2: [],
       imageDialogVisible: false,
       dialogFormAddVisible: false,
       formLabelWidth: "120px",
@@ -170,6 +230,29 @@ export default {
           message: `Xóa người dùng ${row.fullName} thành công !`,
         });
       });
+    },
+    async viewDetail(index, row) {
+      this.NewsIdDelete = row.id;
+      await axios
+        .get(
+          `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/ChildInfo/GetChildInfoByMomId/` +
+            this.NewsIdDelete
+        )
+        .then((rs) => {
+          this.tableData1 = rs.data;
+          this.tableData2 = rs.data.data;
+        })
+        .catch((e) => {
+          console.error(e);
+          console.log(e);
+        });
+      if (this.tableData2 === null) {
+        this.$message({
+          message: `Trạng thái: Không có người con nào !`,
+        });
+      } else {
+        this.dialogFormVisible1 = true;
+      }
     },
     async onSearchInput(e) {
       if (this.search === "") {

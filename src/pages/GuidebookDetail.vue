@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h1 style="color: #363636">CẨM NANG CHI TIẾT</h1>
-    <div style="width: 100%; height: 100%">
+    <h1 style="color: #363636;">CẨM NANG CHI TIẾT</h1>
+    <div style="width: 100%; height: 100%; background-color:white">
       <div
         style="
           text-align: center;
@@ -48,6 +48,7 @@ export default {
 <style>
 p {
   color: #363636;
+  margin-left: 10px;
 }
 img {
   display: block;

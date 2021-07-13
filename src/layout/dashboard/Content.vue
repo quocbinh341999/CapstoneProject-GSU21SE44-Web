@@ -1,5 +1,7 @@
 <template>
-  <div class="content" style="background-color: NavajoWhite">
+  <div class="content" 
+  style="background-color: #DCDCDC"
+  >
     <fade-transition :duration="100" mode="out-in">
       <!-- your content here -->
       <router-view></router-view>

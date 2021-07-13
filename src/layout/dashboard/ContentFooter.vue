@@ -1,5 +1,5 @@
 <template>
-  <footer class="footer" style="background-color:NavajoWhite">
+  <footer class="footer" style="background-color: #DCDCDC">
     <div class="container-fluid">
       
       <div class="copyright">

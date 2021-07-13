@@ -8,6 +8,90 @@
       plain
       >Thêm cẩm nang mới</el-button
     >
+    <el-button
+      type="primary"
+      @click="dialogFormAddVisible1 = true"
+      style="margin-bottom: 15px; color: #909399"
+      plain
+      >Quản lý loại cẩm nang</el-button
+    >
+    <el-dialog
+      title="LOẠI CẨM NANG"
+      :visible.sync="dialogFormAddVisible1"
+      :lock-scroll="true"
+    >
+      <label :label-width="formLabelWidth" style="margin-left: 3px"
+        >Loại tin tức</label
+      >
+      <el-input
+        v-model="typeNews"
+        autocomplete="off"
+        style="width: 70%; margin-left: 10px"
+      ></el-input>
+      <el-button type="success" style="margin-left: 10px" @click="addType">
+        Thêm
+      </el-button>
+      <el-table :data="tableData1" style="width: 70%; margin-left: 15%">
+        <el-table-column label="STT" type="index" width="60"> </el-table-column>
+        <el-table-column label="Loại cẩm nang" width="240">
+          <template slot-scope="scope">
+            <!-- <el-input
+              v-model="scope.row.type"
+              :disabled="!scope.row.edited"
+            ></el-input> -->
+            <span>{{ scope.row.type }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="right">
+          <template slot-scope="scope">
+            <el-button size="mini" @click="handleEdit1(scope.$index, scope.row)"
+              >Chỉnh sửa</el-button
+            >
+            <el-dialog
+              :visible.sync="dialogFormVisible1"
+              :lock-scroll="true"
+              width="60%"
+              append-to-body
+            >
+              <el-form
+                :model="form1"
+                :rules="rulesForm1"
+                ref="form1"
+                class="demo-ruleForm"
+              >
+                <el-form-item
+                  label="Loại cẩm nang"
+                  :label-width="formLabelWidth"
+                  prop="typeNews"
+                >
+                  <el-input
+                    v-model="form1.typeNews"
+                    autocomplete="off"
+                  ></el-input>
+                </el-form-item>
+              </el-form>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible1 = false"
+                  >Hủy bỏ</el-button
+                >
+                <el-button
+                  type="primary"
+                  @click="confirm1(scope.$index, scope.row, 'form1')"
+                  >Xác nhận</el-button
+                >
+              </span>
+            </el-dialog>
+            <el-button
+              size="mini"
+              type="danger"
+              @click="handleDelete1(scope.$index, scope.row)"
+              style="margin-left: 10px"
+              >Xóa</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
     <el-dialog
       title="Thêm cẩm nang"
       :visible.sync="dialogFormAddVisible"
@@ -360,6 +444,13 @@ export default {
         callback();
       }
     };
+    var checkTypeNews = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("Vui lòng nhập loại cẩm nang !"));
+      } else {
+        callback();
+      }
+    };
     return {
       rules: {
         estimateTime: [{ validator: checkTime, trigger: "blur" }],
@@ -370,6 +461,9 @@ export default {
       },
       rulesForm: {
         estimateTime1: [{ validator: checkTime, trigger: "blur" }],
+      },
+      rulesForm1: {
+        typeNews: [{ validator: checkTypeNews, trigger: "blur" }],
       },
       tableData: [],
       dialogFormVisible: false,
@@ -408,6 +502,13 @@ export default {
       editorConfig: {
         // The configuration of the editor.
       },
+      dialogFormVisible1: false,
+      dialogFormAddVisible1: false,
+      form1: {
+        typeNews: "",
+      },
+      tableData1: [],
+      typeNews: "",
     };
   },
   created: function () {
@@ -428,6 +529,7 @@ export default {
       )
       .then((res) => {
         this.listtype = res.data.data;
+        this.tableData1 = res.data.data;
       })
       .catch((e) => {
         console.error(e);
@@ -467,7 +569,6 @@ export default {
     },
     async confirm(index, row, formName) {
       this.$refs[formName].validate(async (valid) => {
-        
         if (valid) {
           let userInfo = JSON.parse(localStorage.getItem("userInfo"));
           this.dialogFormVisible = false;
@@ -491,7 +592,7 @@ export default {
                   imageURL: imageUrl1,
                   typeId: this.form.typeName,
                   estimateFinishTime: this.form.estimateTime1,
-                  lastModifiedBy: userInfo.id
+                  lastModifiedBy: userInfo.id,
                 }
               );
               await axios
@@ -516,7 +617,7 @@ export default {
                   guidebookContent: this.form.NewsContent,
                   typeId: this.form.typeName,
                   estimateFinishTime: this.form.estimateTime1,
-                  lastModifiedBy: userInfo.id
+                  lastModifiedBy: userInfo.id,
                 }
               );
               await axios
@@ -584,7 +685,7 @@ export default {
                   imageURL: imageUrl,
                   typeId: type,
                   estimateFinishTime: time,
-                  createdBy: userInfo.id
+                  createdBy: userInfo.id,
                 }
               );
             } else {
@@ -595,7 +696,7 @@ export default {
                   guidebookContent: NewsContent,
                   typeId: type,
                   estimateFinishTime: time,
-                  createdBy: userInfo.id
+                  createdBy: userInfo.id,
                 }
               );
             }
@@ -721,6 +822,135 @@ export default {
     cancel(formName) {
       this.$refs[formName].resetFields();
       this.dialogFormAddVisible = false;
+    },
+    async addType() {
+      if (this.typeNews === "") {
+        this.$message({
+          message: `Vui lòng nhập loại cẩm nang !`,
+          type: "warning",
+        });
+      } else {
+        await axios.post(
+          `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/GuidebooksType/AddGuidebookType`,
+          {
+            type: this.typeNews,
+          }
+        );
+        await axios
+          .get(
+            `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/GuidebooksType/GetAllGuidebookType`
+          )
+          .then((rs) => {
+            this.tableData1 = rs.data.data;
+          })
+          .catch((e) => {
+            console.error(e);
+            console.log(e);
+          });
+      }
+    },
+    handleEdit1(index, row) {
+      this.dialogFormVisible1 = true;
+      this.editedIndex = this.tableData1.indexOf(row);
+      this.form1.typeNews = row.type;
+    },
+    async confirm1(index, row, formName) {
+      this.$refs[formName].validate(async (valid) => {
+        if (valid) {
+          this.dialogFormVisible1 = false;
+          let NewsId = this.tableData1[this.editedIndex].id;
+          try {
+            await axios.put(
+              `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/GuidebooksType/UpdateGuidebookType/` +
+                NewsId,
+              {
+                id: NewsId,
+                type: this.form1.typeNews,
+              }
+            );
+            await axios
+              .get(
+                `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/GuidebooksType/GetAllGuidebookType`
+              )
+              .then((rs) => {
+                this.tableData1 = rs.data.data;
+              })
+              .catch((e) => {
+                console.error(e);
+                console.log(e);
+              });
+
+            this.$message({
+              message: `Cập nhật loại cẩm nang thành công !`,
+              type: "success",
+            });
+          } catch (e) {
+            console.log(e);
+            this.$message({
+              message: `Cập nhật loại cẩm nang không thành công ! `,
+            });
+          }
+        }
+      });
+    },
+    handleDelete1(index, row) {
+      const h = this.$createElement;
+      this.$msgbox({
+        title: "Warning",
+        message: h("p", null, [
+          h(
+            "span",
+            { style: "color: black" },
+            "Những cẩm nang có cùng loại này sẽ bị xóa. Bạn có chắc chắn muốn xóa ? "
+          ),
+        ]),
+        showCancelButton: true,
+        confirmButtonText: "Xác nhận",
+        cancelButtonText: "Hủy bỏ",
+        beforeClose: (action, instance, done) => {
+          if (action === "confirm") {
+            instance.confirmButtonLoading = true;
+            instance.confirmButtonText = "Đang chờ...";
+            setTimeout(() => {
+              done();
+              setTimeout(() => {
+                instance.confirmButtonLoading = false;
+              }, 300);
+            }, 3000);
+            this.NewsIdDelete = row.id;
+            axios
+              .put(
+                `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/GuidebooksType/DeleteGuidebookType/` +
+                  this.NewsIdDelete
+              )
+              .then((response) => {
+                setTimeout(async () => {
+                  await axios
+                    .get(
+                      `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/GuidebooksType/GetAllGuidebookType`
+                    )
+                    .then((rs) => {
+                      this.tableData1 = rs.data.data;
+                    })
+                    .catch((e) => {
+                      console.error(e);
+                      console.log(e);
+                    });
+                  setTimeout(() => {
+                    instance.confirmButtonLoading = false;
+                  }, 300);
+                }, 3000);
+              });
+          } else {
+            done();
+          }
+        },
+      }).then((action) => {
+        this.$message({
+          type: "success",
+          message: "Xóa thành công !",
+        });
+      });
     },
   },
 };
