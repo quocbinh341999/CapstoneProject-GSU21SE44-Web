@@ -8,6 +8,90 @@
       plain
       >Thêm tin mới</el-button
     >
+    <el-button
+      type="primary"
+      @click="dialogFormAddVisible1 = true"
+      style="margin-bottom: 15px; color: #909399"
+      plain
+      >Quản lý loại tin tức</el-button
+    >
+    <el-dialog
+      title="LOẠI TIN TỨC"
+      :visible.sync="dialogFormAddVisible1"
+      :lock-scroll="true"
+    >
+      <label :label-width="formLabelWidth" style="margin-left: 3px"
+        >Loại tin tức</label
+      >
+      <el-input
+        v-model="typeNews"
+        autocomplete="off"
+        style="width: 70%; margin-left: 10px"
+      ></el-input>
+      <el-button type="success" style="margin-left: 10px" @click="addType">
+        Thêm
+      </el-button>
+      <el-table :data="tableData1" style="width: 70%; margin-left: 15%">
+        <el-table-column label="STT" type="index" width="60"> </el-table-column>
+        <el-table-column label="Loại tin tức" width="240">
+          <template slot-scope="scope">
+            <!-- <el-input
+              v-model="scope.row.type"
+              :disabled="!scope.row.edited"
+            ></el-input> -->
+            <span>{{ scope.row.type }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="right">
+          <template slot-scope="scope">
+            <el-button size="mini" @click="handleEdit1(scope.$index, scope.row)"
+              >Chỉnh sửa</el-button
+            >
+            <el-dialog
+              :visible.sync="dialogFormVisible1"
+              :lock-scroll="true"
+              width="60%"
+              append-to-body
+            >
+              <el-form
+                :model="form1"
+                :rules="rulesForm1"
+                ref="form1"
+                class="demo-ruleForm"
+              >
+                <el-form-item
+                  label="Loại tin tức"
+                  :label-width="formLabelWidth"
+                  prop="typeNews"
+                >
+                  <el-input
+                    v-model="form1.typeNews"
+                    autocomplete="off"
+                  ></el-input>
+                </el-form-item>
+              </el-form>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible1 = false"
+                  >Hủy bỏ</el-button
+                >
+                <el-button
+                  type="primary"
+                  @click="confirm1(scope.$index, scope.row, 'form1')"
+                  >Xác nhận</el-button
+                >
+              </span>
+            </el-dialog>
+            <el-button
+              size="mini"
+              type="danger"
+              @click="handleDelete1(scope.$index, scope.row)"
+              style="margin-left: 10px"
+              >Xóa</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
     <el-dialog
       title="Thêm tin mới"
       :visible.sync="dialogFormAddVisible"
@@ -72,12 +156,6 @@
           :label-width="formLabelWidth"
           prop="NewsContent"
         >
-          <!-- <el-input
-            type="textarea"
-            :autosize="{ minRows: 2, maxRows: 4 }"
-            v-model="addNews.NewsContent"
-          >
-          </el-input> -->
           <mumbi-editor v-model="addNews.NewsContent"></mumbi-editor>
         </el-form-item>
         <el-form-item
@@ -133,14 +211,6 @@
           <span>{{ scope.row.title }}</span>
         </template>
       </el-table-column>
-      <!-- <el-table-column label="Nội dung" :min-width="150"> -->
-      <!-- <template slot-scope="scope"> -->
-      <!-- <a href={{ scope.row.newsContent }}></a> -->
-      <!-- <a :href="scope.row.newsContent" target="_blank" download=""
-            ><span v-html="scope.row.newsContent"></span
-          ></a> -->
-      <!-- </template> -->
-      <!-- </el-table-column> -->
       <el-table-column label="Loại tin tức" :min-width="60">
         <template slot-scope="scope">
           <span>{{ scope.row.type }}</span>
@@ -360,6 +430,13 @@ export default {
         callback();
       }
     };
+    var checkTypeNews = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("Vui lòng nhập loại tin tức !"));
+      } else {
+        callback();
+      }
+    };
     return {
       rules: {
         estimateTime: [{ validator: checkTime, trigger: "blur" }],
@@ -371,11 +448,21 @@ export default {
       rulesForm: {
         estimateTime1: [{ validator: checkTime, trigger: "blur" }],
       },
+      rulesForm1: {
+        typeNews: [{ validator: checkTypeNews, trigger: "blur" }],
+      },
+      typeNews: "",
       tableData: [],
+      tableData1: [],
       dialogFormVisible: false,
       dialogFormAddVisible: false,
       dialogCommentAddVisible: false,
       imageDialogVisible: false,
+      dialogFormVisible1: false,
+      dialogFormAddVisible1: false,
+      form1: {
+        typeNews: "",
+      },
       dialogImage: { imageUrl: "" },
       form: {
         typeName: "",
@@ -411,11 +498,6 @@ export default {
     };
   },
   created: function () {
-    const req = Request({
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-    });
     axios
       .get(
         `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/News/GetAllNews`
@@ -433,6 +515,7 @@ export default {
       )
       .then((res) => {
         this.listtype = res.data.data;
+        this.tableData1 = res.data.data;
       })
       .catch((e) => {
         console.error(e);
@@ -469,6 +552,50 @@ export default {
       this.form.typeName = row.typeId;
       this.form.imageUrl = row.imageURL;
       this.form.estimateTime1 = row.estimateFinishTime;
+    },
+    handleEdit1(index, row) {
+      this.dialogFormVisible1 = true;
+      this.editedIndex = this.tableData1.indexOf(row);
+      this.form1.typeNews = row.type;
+    },
+    async confirm1(index, row, formName) {
+      this.$refs[formName].validate(async (valid) => {
+        if (valid) {
+          this.dialogFormVisible1 = false;
+          let NewsId = this.tableData1[this.editedIndex].id;
+          try {
+            await axios.put(
+              `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/NewsType/UpdateNewsType/` +
+                NewsId,
+              {
+                id: NewsId,
+                type: this.form1.typeNews,
+              }
+            );
+            await axios
+              .get(
+                `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/NewsType/GetAllNewsType`
+              )
+              .then((rs) => {
+                this.tableData1 = rs.data.data;
+              })
+              .catch((e) => {
+                console.error(e);
+                console.log(e);
+              });
+
+            this.$message({
+              message: `Cập nhật loại tin tức thành công !`,
+              type: "success",
+            });
+          } catch (e) {
+            console.log(e);
+            this.$message({
+              message: `Cập nhật loại tin tức không thành công ! `,
+            });
+          }
+        }
+      });
     },
     async confirm(index, row, formName) {
       this.$refs[formName].validate(async (valid) => {
@@ -701,6 +828,65 @@ export default {
         });
       });
     },
+    handleDelete1(index, row) {
+      const h = this.$createElement;
+      this.$msgbox({
+        title: "Warning",
+        message: h("p", null, [
+          h(
+            "span",
+            { style: "color: black" },
+            "Những tin tức có loại này sẽ bị xóa. Bạn có chắc chắn muốn xóa ? "
+          ),
+        ]),
+        showCancelButton: true,
+        confirmButtonText: "Xác nhận",
+        cancelButtonText: "Hủy bỏ",
+        beforeClose: (action, instance, done) => {
+          if (action === "confirm") {
+            instance.confirmButtonLoading = true;
+            instance.confirmButtonText = "Đang chờ...";
+            setTimeout(() => {
+              done();
+              setTimeout(() => {
+                instance.confirmButtonLoading = false;
+              }, 300);
+            }, 3000);
+            this.NewsIdDelete = row.id;
+            axios
+              .put(
+                `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/NewsType/DeleteNewsType/` +
+                  this.NewsIdDelete
+              )
+              .then((response) => {
+                setTimeout(async () => {
+                  await axios
+                    .get(
+                      `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/NewsType/GetAllNewsType`
+                    )
+                    .then((rs) => {
+                      this.tableData1 = rs.data.data;
+                    })
+                    .catch((e) => {
+                      console.error(e);
+                      console.log(e);
+                    });
+                  setTimeout(() => {
+                    instance.confirmButtonLoading = false;
+                  }, 300);
+                }, 3000);
+              });
+          } else {
+            done();
+          }
+        },
+      }).then((action) => {
+        this.$message({
+          type: "success",
+          message: "Xóa thành công !",
+        });
+      });
+    },
     viewDetail(index, row) {
       localStorage.setItem("NewsId", row.id);
       this.$router.push({
@@ -722,6 +908,32 @@ export default {
         console.log(error);
       }
     },
+    async addType() {
+      if (this.typeNews === "") {
+        this.$message({
+          message: `Vui lòng nhập loại tin tức !`,
+          type: "warning",
+        });
+      } else {
+        await axios.post(
+          `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/NewsType/AddNewsType`,
+          {
+            type: this.typeNews,
+          }
+        );
+        await axios
+          .get(
+            `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/NewsType/GetAllNewsType`
+          )
+          .then((rs) => {
+            this.tableData1 = rs.data.data;
+          })
+          .catch((e) => {
+            console.error(e);
+            console.log(e);
+          });
+      }
+    },
     cancel(formName) {
       this.$refs[formName].resetFields();
       this.dialogFormAddVisible = false;
@@ -731,7 +943,7 @@ export default {
 </script>
 <style>
 p {
-  color: #606266;
+  color: black;
 }
 .el-table td {
   text-align: center;

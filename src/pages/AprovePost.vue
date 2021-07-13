@@ -10,11 +10,11 @@
           <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Người tạo" width="100">
+      <!-- <el-table-column label="Người tạo" width="100">
         <template slot-scope="scope">
           <span>{{ scope.row.createdBy }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="Hình ảnh" prop="image" width="200">
         <template slot-scope="scope">
           <img
@@ -24,7 +24,7 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="Nội dung" width="650">
+      <el-table-column label="Nội dung" width="750">
         <template slot-scope="scope">
           <span>{{ scope.row.diaryContent }}</span>
         </template>
@@ -159,7 +159,8 @@ export default {
             publicFlag: true,
             diaryContent: content,
             childId: childIdApprove,
-            lastModifiedBy: userInfo.id
+            lastModifiedBy: userInfo.id,
+            publicDate: new Date()
           }
         )
         .then((rs) => {
