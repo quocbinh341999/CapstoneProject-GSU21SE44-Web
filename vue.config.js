@@ -9,7 +9,7 @@ module.exports = {
     /ckeditor5-[^/\\]+[/\\]src[/\\].+\.js$/
   ],
   devServer: {
-    proxy: 'http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com',
+    proxy: 'http://service.mumbi.xyz',
     // '^/api': {
     //   target: '<url>',
     //   ws: true,

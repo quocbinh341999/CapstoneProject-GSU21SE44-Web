@@ -32,7 +32,7 @@ export default {
     let idNews = localStorage.getItem("GuidebookId");
     axios
       .get(
-        `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/Guidebooks/GetGuidebookBy/` +
+        `http://service.mumbi.xyz/api/Guidebooks/GetGuidebookBy/` +
           idNews
       )
       .then((rs) => {

@@ -168,7 +168,7 @@ export default {
           "BNN2j64Wo_Ma8G7ElOgRnFH-k9raFwK4jbdOyTJ6BkRPHrI6FXdALMMlKz93x1rSbptR7_ogIHI0yeKLRwnUxVU",
       });
       await axios.delete(
-        `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/Token/DeleteToken/${userInfo.id}/${token2}`
+        `http://service.mumbi.xyz/api/Token/DeleteToken/${userInfo.id}/${token2}`
       );
       this.$router.push({
         name: "login",

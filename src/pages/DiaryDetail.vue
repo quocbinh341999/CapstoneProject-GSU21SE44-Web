@@ -20,7 +20,7 @@ export default {
     let idNews = localStorage.getItem("ChildId");
     axios
       .get(
-        `http://mumbicapstone-dev.ap-southeast-1.elasticbeanstalk.com/api/Diaries/GetDiaryOfChildren/` +
+        `http://service.mumbi.xyz/api/Diaries/GetDiaryOfChildren/` +
           idNews
       )
       .then((rs) => {

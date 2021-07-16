@@ -50,7 +50,10 @@ Vue.use(VueAxios,axios);
 import Repository from "./services/repositories/RepositoryFactory";
 // import CKEditor from 'ckeditor4-vue';
 import CKEditor from '@ckeditor/ckeditor5-vue2';
-
+import VueMeta from 'vue-meta'
+Vue.use(VueMeta, {
+  keyName: 'head'
+})
 // Vue.use( CKEditor );
 Vue.use(CKEditor)
 Vue.prototype.$repository=Repository;
