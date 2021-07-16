@@ -32,7 +32,7 @@ export default {
     let idNews = localStorage.getItem("NewsId");
     axios
       .get(
-        `http://service.mumbi.xyz/api/News/GetNewsBy/` +
+        `https://service.mumbi.xyz/api/News/GetNewsBy/` +
           idNews
       )
       .then((rs) => {

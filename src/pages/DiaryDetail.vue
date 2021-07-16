@@ -20,7 +20,7 @@ export default {
     let idNews = localStorage.getItem("ChildId");
     axios
       .get(
-        `http://service.mumbi.xyz/api/Diaries/GetDiaryOfChildren/` +
+        `https://service.mumbi.xyz/api/Diaries/GetDiaryOfChildren/` +
           idNews
       )
       .then((rs) => {

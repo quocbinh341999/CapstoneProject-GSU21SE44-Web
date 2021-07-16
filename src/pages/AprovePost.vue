@@ -112,7 +112,7 @@ export default {
   created: function () {
     axios
       .get(
-        `http://service.mumbi.xyz/api/Diaries/GetDiaryToApprove`
+        `https://service.mumbi.xyz/api/Diaries/GetDiaryToApprove`
       )
       .then((rs) => {
         this.tableData = rs.data.data;
@@ -152,7 +152,7 @@ export default {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
       await axios
         .put(
-          `http://service.mumbi.xyz/api/Diaries/UpdateDiary/${diaryId}?childID=${childIdApprove}`,
+          `https://service.mumbi.xyz/api/Diaries/UpdateDiary/${diaryId}?childID=${childIdApprove}`,
           {
             id: diaryId,
             approvedFlag: true,
@@ -171,7 +171,7 @@ export default {
         });
       await axios
         .get(
-          `http://service.mumbi.xyz/api/Diaries/GetDiaryToApprove`
+          `https://service.mumbi.xyz/api/Diaries/GetDiaryToApprove`
         )
         .then((rs) => {
           this.tableData = rs.data.data;
@@ -231,7 +231,7 @@ export default {
       let content = this.tableData[this.editedIndex].diaryContent;
       await axios
         .put(
-          `http://service.mumbi.xyz/api/Diaries/UpdateDiary/${diaryId}?childID=${childIdApprove}`,
+          `https://service.mumbi.xyz/api/Diaries/UpdateDiary/${diaryId}?childID=${childIdApprove}`,
           {
             id: diaryId,
             approvedFlag: false,
@@ -249,7 +249,7 @@ export default {
         });
       await axios
         .get(
-          `http://service.mumbi.xyz/api/Diaries/GetDiaryToApprove`
+          `https://service.mumbi.xyz/api/Diaries/GetDiaryToApprove`
         )
         .then((rs) => {
           this.tableData = rs.data.data;

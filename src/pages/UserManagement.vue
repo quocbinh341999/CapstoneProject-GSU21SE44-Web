@@ -160,7 +160,7 @@ export default {
   created: function () {
     axios
       .get(
-        `http://service.mumbi.xyz/api/MomInfo/GetAllMomInfo`
+        `https://service.mumbi.xyz/api/MomInfo/GetAllMomInfo`
       )
       .then((rs) => {
         this.tableData = rs.data.data;
@@ -210,7 +210,7 @@ export default {
             this.userIdDelete = row.id;
             axios
               .put(
-                `http://service.mumbi.xyz/api/MomInfo/DeleteMomInfo/` +
+                `https://service.mumbi.xyz/api/MomInfo/DeleteMomInfo/` +
                   this.userIdDelete
               )
               .then((response) => {});
@@ -235,7 +235,7 @@ export default {
       this.NewsIdDelete = row.id;
       await axios
         .get(
-          `http://service.mumbi.xyz/api/ChildInfo/GetChildInfoByMomId/` +
+          `https://service.mumbi.xyz/api/ChildInfo/GetChildInfoByMomId/` +
             this.NewsIdDelete
         )
         .then((rs) => {
