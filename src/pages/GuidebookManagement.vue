@@ -514,7 +514,7 @@ export default {
   created: function () {
     axios
       .get(
-        `http://service.mumbi.xyz/api/Guidebooks/GetAllGuidebook`
+        `https://service.mumbi.xyz/api/Guidebooks/GetAllGuidebook`
       )
       .then((rs) => {
         this.tableData = rs.data.data;
@@ -525,7 +525,7 @@ export default {
       });
     axios
       .get(
-        `http://service.mumbi.xyz/api/GuidebooksType/GetAllGuidebookType`
+        `https://service.mumbi.xyz/api/GuidebooksType/GetAllGuidebookType`
       )
       .then((res) => {
         this.listtype = res.data.data;
@@ -583,7 +583,7 @@ export default {
               await ref.put(this.form.imageFile);
               let imageUrl1 = await ref.getDownloadURL();
               await axios.put(
-                `http://service.mumbi.xyz/api/Guidebooks/UpdateGuidebook/` +
+                `https://service.mumbi.xyz/api/Guidebooks/UpdateGuidebook/` +
                   NewsId,
                 {
                   id: NewsId,
@@ -597,7 +597,7 @@ export default {
               );
               await axios
                 .get(
-                  `http://service.mumbi.xyz/api/Guidebooks/GetAllGuidebook`
+                  `https://service.mumbi.xyz/api/Guidebooks/GetAllGuidebook`
                 )
                 .then((rs) => {
                   this.tableData = rs.data.data;
@@ -608,7 +608,7 @@ export default {
                 });
             } else {
               await axios.put(
-                `http://service.mumbi.xyz/api/Guidebooks/UpdateGuidebook/` +
+                `https://service.mumbi.xyz/api/Guidebooks/UpdateGuidebook/` +
                   NewsId,
                 {
                   imageURL: this.form.imageUrl,
@@ -622,7 +622,7 @@ export default {
               );
               await axios
                 .get(
-                  `http://service.mumbi.xyz/api/Guidebooks/GetAllGuidebook`
+                  `https://service.mumbi.xyz/api/Guidebooks/GetAllGuidebook`
                 )
                 .then((rs) => {
                   this.tableData = rs.data.data;
@@ -678,7 +678,7 @@ export default {
               let imageUrl = await ref.getDownloadURL();
 
               await axios.post(
-                `http://service.mumbi.xyz/api/Guidebooks/AddGuidebook`,
+                `https://service.mumbi.xyz/api/Guidebooks/AddGuidebook`,
                 {
                   title: titleNews,
                   guidebookContent: NewsContent,
@@ -690,7 +690,7 @@ export default {
               );
             } else {
               await axios.post(
-                `http://service.mumbi.xyz/api/Guidebooks/AddGuidebook`,
+                `https://service.mumbi.xyz/api/Guidebooks/AddGuidebook`,
                 {
                   title: titleNews,
                   guidebookContent: NewsContent,
@@ -706,7 +706,7 @@ export default {
             });
             await axios
               .get(
-                `http://service.mumbi.xyz/api/Guidebooks/GetAllGuidebook`
+                `https://service.mumbi.xyz/api/Guidebooks/GetAllGuidebook`
               )
               .then((rs) => {
                 this.tableData = rs.data.data;
@@ -777,7 +777,7 @@ export default {
             this.NewsIdDelete = row.id;
             axios
               .put(
-                `http://service.mumbi.xyz/api/Guidebooks/DeleteGuidebook/` +
+                `https://service.mumbi.xyz/api/Guidebooks/DeleteGuidebook/` +
                   this.NewsIdDelete
               )
               .then((response) => {});
@@ -831,14 +831,14 @@ export default {
         });
       } else {
         await axios.post(
-          `http://service.mumbi.xyz/api/GuidebooksType/AddGuidebookType`,
+          `https://service.mumbi.xyz/api/GuidebooksType/AddGuidebookType`,
           {
             type: this.typeNews,
           }
         );
         await axios
           .get(
-            `http://service.mumbi.xyz/api/GuidebooksType/GetAllGuidebookType`
+            `https://service.mumbi.xyz/api/GuidebooksType/GetAllGuidebookType`
           )
           .then((rs) => {
             this.tableData1 = rs.data.data;
@@ -861,7 +861,7 @@ export default {
           let NewsId = this.tableData1[this.editedIndex].id;
           try {
             await axios.put(
-              `http://service.mumbi.xyz/api/GuidebooksType/UpdateGuidebookType/` +
+              `https://service.mumbi.xyz/api/GuidebooksType/UpdateGuidebookType/` +
                 NewsId,
               {
                 id: NewsId,
@@ -870,7 +870,7 @@ export default {
             );
             await axios
               .get(
-                `http://service.mumbi.xyz/api/GuidebooksType/GetAllGuidebookType`
+                `https://service.mumbi.xyz/api/GuidebooksType/GetAllGuidebookType`
               )
               .then((rs) => {
                 this.tableData1 = rs.data.data;
@@ -920,14 +920,14 @@ export default {
             this.NewsIdDelete = row.id;
             axios
               .put(
-                `http://service.mumbi.xyz/api/GuidebooksType/DeleteGuidebookType/` +
+                `https://service.mumbi.xyz/api/GuidebooksType/DeleteGuidebookType/` +
                   this.NewsIdDelete
               )
               .then((response) => {
                 setTimeout(async () => {
                   await axios
                     .get(
-                      `http://service.mumbi.xyz/api/GuidebooksType/GetAllGuidebookType`
+                      `https://service.mumbi.xyz/api/GuidebooksType/GetAllGuidebookType`
                     )
                     .then((rs) => {
                       this.tableData1 = rs.data.data;

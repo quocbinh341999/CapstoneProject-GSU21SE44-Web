@@ -110,7 +110,7 @@ export default {
           await ref.put(this.form.imageFile);
           let imageUrl1 = await ref.getDownloadURL();
           await axios.put(
-            `http://service.mumbi.xyz/api/News/UpdateNews/` +
+            `https://service.mumbi.xyz/api/News/UpdateNews/` +
               NewsId,
             {
               id: NewsId,
@@ -126,7 +126,7 @@ export default {
           this.tableData[this.editedIndex].imageURL = this.form.imageUrl;
         } else {
           await axios.put(
-            `http://service.mumbi.xyz/api/News/UpdateNews/` +
+            `https://service.mumbi.xyz/api/News/UpdateNews/` +
               NewsId,
             {
               imageURL: this.form.imageUrl,
@@ -201,7 +201,7 @@ export default {
   async created() {
     let userInfo = JSON.parse(localStorage.getItem("userInfo"));
     let result = await axios.get(
-      `http://service.mumbi.xyz/api/UserInfo/GetStaffInfoBy/${userInfo.id}`
+      `https://service.mumbi.xyz/api/UserInfo/GetStaffInfoBy/${userInfo.id}`
     );
     let user1 = result.data.data;
     localStorage.setItem("userInfo1", JSON.stringify(user1));
