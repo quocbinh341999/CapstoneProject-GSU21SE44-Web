@@ -218,7 +218,7 @@
       </el-table-column>
       <el-table-column label="Thời gian đọc" :min-width="60">
         <template slot-scope="scope">
-          <span>{{ scope.row.estimateFinishTime }}</span>
+          <span>{{ scope.row.estimatedFinishTime }}</span>
         </template>
       </el-table-column>
       <el-table-column align="right">
@@ -551,7 +551,7 @@ export default {
       this.form.NewsContent = row.newsContent;
       this.form.typeName = row.typeId;
       this.form.imageUrl = row.imageURL;
-      this.form.estimateTime1 = row.estimateFinishTime;
+      this.form.estimateTime1 = row.estimatedFinishTime;
     },
     handleEdit1(index, row) {
       this.dialogFormVisible1 = true;
@@ -621,7 +621,7 @@ export default {
                   newsContent: this.form.NewsContent,
                   imageURL: imageUrl1,
                   typeId: this.form.typeName,
-                  estimateFinishTime: this.form.estimateTime1,
+                  estimatedFinishTime: this.form.estimateTime1,
                   lastModifiedBy: userInfo.id,
                 }
               );
@@ -646,7 +646,7 @@ export default {
                   title: this.form.title,
                   newsContent: this.form.NewsContent,
                   typeId: this.form.typeName,
-                  estimateFinishTime: this.form.estimateTime1,
+                  estimatedFinishTime: this.form.estimateTime1,
                   lastModifiedBy: userInfo.id,
                 }
               );
@@ -714,7 +714,7 @@ export default {
                   newsContent: NewsContent,
                   imageURL: imageUrl,
                   typeId: type,
-                  estimateFinishTime: time,
+                  estimatedFinishTime: time,
                   createdBy: userInfo.id,
                 }
               );
@@ -725,7 +725,7 @@ export default {
                   title: titleNews,
                   newsContent: NewsContent,
                   typeId: type,
-                  estimateFinishTime: time,
+                  estimatedFinishTime: time,
                   createdBy: userInfo.id,
                 }
               );

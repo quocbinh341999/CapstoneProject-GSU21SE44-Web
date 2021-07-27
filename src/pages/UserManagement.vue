@@ -76,7 +76,14 @@
               </el-table-column>
               <el-table-column label="Giới tính" width="100">
                 <template slot-scope="scope">
-                  <span>{{ scope.row.gender }}</span>
+                  <span>{{
+                    scope.row.gender === "1"
+                      ? "Bé trai"
+                      : scope.row.gender === "2"
+                      ? "Bé gái"
+                      : "Chưa rõ"
+                  }}</span>
+                  <!-- <span>{{ scope.row.gender }}</span> -->
                 </template>
               </el-table-column>
               <el-table-column label="Ngày dự sinh" width="100">

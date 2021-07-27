@@ -1,99 +1,15 @@
 <template>
   <div>
-    <h1 style="color: #909399">QUẢN LÝ CẨM NANG</h1>
+    <h1 style="color: #909399">QUẢN LÝ HOẠT ĐỘNG THAI GIÁO</h1>
     <el-button
       type="primary"
       @click="dialogFormAddVisible = true"
       style="margin-bottom: 15px; color: #909399"
       plain
-      >Thêm cẩm nang mới</el-button
-    >
-    <el-button
-      type="primary"
-      @click="dialogFormAddVisible1 = true"
-      style="margin-bottom: 15px; color: #909399"
-      plain
-      >Quản lý loại cẩm nang</el-button
+      >Thêm hoạt động mới</el-button
     >
     <el-dialog
-      title="LOẠI CẨM NANG"
-      :visible.sync="dialogFormAddVisible1"
-      :lock-scroll="true"
-    >
-      <label :label-width="formLabelWidth" style="margin-left: 3px"
-        >Loại tin tức</label
-      >
-      <el-input
-        v-model="typeNews"
-        autocomplete="off"
-        style="width: 70%; margin-left: 10px"
-      ></el-input>
-      <el-button type="success" style="margin-left: 10px" @click="addType">
-        Thêm
-      </el-button>
-      <el-table :data="tableData1" style="width: 70%; margin-left: 15%">
-        <el-table-column label="STT" type="index" width="60"> </el-table-column>
-        <el-table-column label="Loại cẩm nang" width="240">
-          <template slot-scope="scope">
-            <!-- <el-input
-              v-model="scope.row.type"
-              :disabled="!scope.row.edited"
-            ></el-input> -->
-            <span>{{ scope.row.type }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="right">
-          <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit1(scope.$index, scope.row)"
-              >Chỉnh sửa</el-button
-            >
-            <el-dialog
-              :visible.sync="dialogFormVisible1"
-              :lock-scroll="true"
-              width="60%"
-              append-to-body
-            >
-              <el-form
-                :model="form1"
-                :rules="rulesForm1"
-                ref="form1"
-                class="demo-ruleForm"
-              >
-                <el-form-item
-                  label="Loại cẩm nang"
-                  :label-width="formLabelWidth"
-                  prop="typeNews"
-                >
-                  <el-input
-                    v-model="form1.typeNews"
-                    autocomplete="off"
-                  ></el-input>
-                </el-form-item>
-              </el-form>
-              <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible1 = false"
-                  >Hủy bỏ</el-button
-                >
-                <el-button
-                  type="primary"
-                  @click="confirm1(scope.$index, scope.row, 'form1')"
-                  >Xác nhận</el-button
-                >
-              </span>
-            </el-dialog>
-            <el-button
-              size="mini"
-              type="danger"
-              @click="handleDelete1(scope.$index, scope.row)"
-              style="margin-left: 10px"
-              >Xóa</el-button
-            >
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-dialog>
-    <el-dialog
-      title="Thêm cẩm nang"
+      title="Thêm hoạt động mới"
       :visible.sync="dialogFormAddVisible"
       :lock-scroll="true"
       width="80%"
@@ -156,12 +72,6 @@
           :label-width="formLabelWidth"
           prop="NewsContent"
         >
-          <!-- <el-input
-            type="textarea"
-            :autosize="{ minRows: 2, maxRows: 4 }"
-            v-model="addNews.NewsContent"
-          >
-          </el-input> -->
           <mumbi-editor v-model="addNews.NewsContent"></mumbi-editor>
         </el-form-item>
         <el-form-item
@@ -172,20 +82,13 @@
           <el-input v-model.number="addNews.estimateTime"></el-input>
         </el-form-item>
         <el-form-item
-          label="Độ tuổi"
-          :label-width="formLabelWidth"
-          prop="suitableAge"
-        >
-          <el-input v-model.number="addNews.suitableAge"></el-input>
-        </el-form-item>
-        <el-form-item
-          label="Loại cẩm nang"
+          label="Loại tin tức"
           :label-width="formLabelWidth"
           prop="typeName"
         >
           <el-select
             v-model="addNews.typeName"
-            placeholder="Vui lòng lựa chọn loại cẩm nang"
+            placeholder="Vui lòng lựa chọn loại tin tức"
             style="float: left"
             :min-width="180"
           >
@@ -209,8 +112,8 @@
       :data="searchResult ? searchResult : tableData"
       style="width: 100%"
     >
-      <el-table-column label="STT" type="index" width="50"> </el-table-column>
-      <el-table-column label="Hình ảnh" prop="image" width="190">
+      <el-table-column label="STT" type="index" width="60"> </el-table-column>
+      <!-- <el-table-column label="Hình ảnh" prop="image" width="200">
         <template slot-scope="scope">
           <img
             v-if="scope.row.imageURL != ''"
@@ -218,31 +121,18 @@
             style="height: 150px; width: 300px"
           />
         </template>
-      </el-table-column>
-      <el-table-column label="Tiêu đề" width="210">
+      </el-table-column> -->
+      <el-table-column label="Tên hoạt động" width="240">
         <template slot-scope="scope">
-          <span>{{ scope.row.title }}</span>
+          <span>{{ scope.row.activityName }}</span>
         </template>
       </el-table-column>
-      <!-- <el-table-column label="Nội dung" :min-width="150"> -->
-      <!-- <template slot-scope="scope"> -->
-      <!-- <a href={{ scope.row.newsContent }}></a> -->
-      <!-- <a :href="scope.row.newsContent" target="_blank" download=""
-            ><span v-html="scope.row.newsContent"></span
-          ></a> -->
-      <!-- </template> -->
-      <!-- </el-table-column> -->
-      <el-table-column label="Loại cẩm nang" :min-width="60">
+      <el-table-column label="Loại hoạt động" :min-width="60">
         <template slot-scope="scope">
           <span>{{ scope.row.type }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Thời gian đọc" :min-width="40">
-        <template slot-scope="scope">
-          <span>{{ scope.row.estimatedFinishTime }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Độ tuổi" :min-width="40">
+      <el-table-column label="Độ tuổi" :min-width="60">
         <template slot-scope="scope">
           <span>{{ scope.row.suitableAge }}</span>
         </template>
@@ -269,8 +159,8 @@
           >
           <el-dialog
             :visible.sync="dialogFormVisible"
+            :lock-scroll="true"
             width="60%"
-            append-to-body
           >
             <el-form
               :model="form"
@@ -343,20 +233,10 @@
                   autocomplete="off"
                 ></el-input>
               </el-form-item>
-              <el-form-item
-                label="Độ tuổi"
-                :label-width="formLabelWidth"
-                prop="suitableAge1"
-              >
-                <el-input
-                  v-model.number="form.suitableAge1"
-                  autocomplete="off"
-                ></el-input>
-              </el-form-item>
-              <el-form-item label="Loại cẩm nang" :label-width="formLabelWidth">
+              <el-form-item label="Loại tin tức" :label-width="formLabelWidth">
                 <el-select
                   v-model="form.typeName"
-                  placeholder="Vui lòng lựa chọn loại cẩm nang"
+                  placeholder="Vui lòng lựa chọn loại tin tức"
                   style="float: left"
                 >
                   <el-option
@@ -423,31 +303,15 @@ export default {
     var checkTime = (rule, value, callback) => {
       if (!value) {
         return callback(
-          new Error("Vui lòng nhập thời gian để đọc hết cẩm nang !")
+          new Error("Vui lòng nhập thời gian để đọc hết tin tức !")
         );
       }
       setTimeout(() => {
         if (!Number.isInteger(value)) {
-          callback(new Error("Thời gian đọc hết cẩm nang phải là một số !"));
+          callback(new Error("Thời gian đọc hết tin tức phải là một số !"));
         } else {
           if (value < 0) {
-            callback(new Error("Thời gian đọc hết cẩm nang phải lớn hơn 0 !"));
-          } else {
-            callback();
-          }
-        }
-      }, 1000);
-    };
-    var checkAge = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error("Vui lòng nhập độ tuổi !"));
-      }
-      setTimeout(() => {
-        if (!Number.isInteger(value)) {
-          callback(new Error("Độ tuổi phải là một số !"));
-        } else {
-          if (value < 0) {
-            callback(new Error("Độ tuổi phải lớn hơn 0 !"));
+            callback(new Error("Thời gian đọc hết tin tức phải lớn hơn 0 !"));
           } else {
             callback();
           }
@@ -477,14 +341,14 @@ export default {
     };
     var checkType = (rule, value, callback) => {
       if (value === "") {
-        callback(new Error("Vui lòng chọn loại cẩm nang !"));
+        callback(new Error("Vui lòng chọn loại tin tức !"));
       } else {
         callback();
       }
     };
     var checkTypeNews = (rule, value, callback) => {
       if (value === "") {
-        callback(new Error("Vui lòng nhập loại cẩm nang !"));
+        callback(new Error("Vui lòng nhập loại tin tức !"));
       } else {
         callback();
       }
@@ -496,20 +360,25 @@ export default {
         newsTitle: [{ validator: checkTitle, trigger: "blur" }],
         imageUrl: [{ validator: checkImg, trigger: "blur" }],
         typeName: [{ validator: checkType, trigger: "blur" }],
-        suitableAge: [{ validator: checkAge, trigger: "blur" }],
       },
       rulesForm: {
         estimateTime1: [{ validator: checkTime, trigger: "blur" }],
-        suitableAge1: [{ validator: checkAge, trigger: "blur" }],
       },
       rulesForm1: {
         typeNews: [{ validator: checkTypeNews, trigger: "blur" }],
       },
+      typeNews: "",
       tableData: [],
+      tableData1: [],
       dialogFormVisible: false,
       dialogFormAddVisible: false,
       dialogCommentAddVisible: false,
       imageDialogVisible: false,
+      dialogFormVisible1: false,
+      dialogFormAddVisible1: false,
+      form1: {
+        typeNews: "",
+      },
       dialogImage: { imageUrl: "" },
       form: {
         typeName: "",
@@ -517,7 +386,6 @@ export default {
         imageUrl: "",
         title: "",
         estimateTime1: "",
-        suitableAge1: "",
       },
       addNews: {
         NewsContent: "",
@@ -527,7 +395,6 @@ export default {
         newsTitle: "",
         estimateTime: "",
         typeName: "",
-        suitableAge: "",
       },
       uploadingImage: "",
       formLabelWidth: "120px",
@@ -544,18 +411,13 @@ export default {
       editorConfig: {
         // The configuration of the editor.
       },
-      dialogFormVisible1: false,
-      dialogFormAddVisible1: false,
-      form1: {
-        typeNews: "",
-      },
-      tableData1: [],
-      typeNews: "",
     };
   },
   created: function () {
     axios
-      .get(`https://service.mumbi.xyz/api/Guidebooks/GetAllGuidebook`)
+      .get(
+        `https://service.mumbi.xyz/api/News/GetAllNews`
+      )
       .then((rs) => {
         this.tableData = rs.data.data;
       })
@@ -564,7 +426,9 @@ export default {
         console.log(e);
       });
     axios
-      .get(`https://service.mumbi.xyz/api/GuidebooksType/GetAllGuidebookType`)
+      .get(
+        `https://service.mumbi.xyz/api/NewsType/GetAllNewsType`
+      )
       .then((res) => {
         this.listtype = res.data.data;
         this.tableData1 = res.data.data;
@@ -600,11 +464,54 @@ export default {
       this.dialogFormVisible = true;
       this.editedIndex = this.tableData.indexOf(row);
       this.form.title = row.title;
-      this.form.NewsContent = row.guidebookContent;
+      this.form.NewsContent = row.newsContent;
       this.form.typeName = row.typeId;
       this.form.imageUrl = row.imageURL;
       this.form.estimateTime1 = row.estimatedFinishTime;
-      this.form.suitableAge1 = row.suitableAge;
+    },
+    handleEdit1(index, row) {
+      this.dialogFormVisible1 = true;
+      this.editedIndex = this.tableData1.indexOf(row);
+      this.form1.typeNews = row.type;
+    },
+    async confirm1(index, row, formName) {
+      this.$refs[formName].validate(async (valid) => {
+        if (valid) {
+          this.dialogFormVisible1 = false;
+          let NewsId = this.tableData1[this.editedIndex].id;
+          try {
+            await axios.put(
+              `https://service.mumbi.xyz/api/NewsType/UpdateNewsType/` +
+                NewsId,
+              {
+                id: NewsId,
+                type: this.form1.typeNews,
+              }
+            );
+            await axios
+              .get(
+                `https://service.mumbi.xyz/api/NewsType/GetAllNewsType`
+              )
+              .then((rs) => {
+                this.tableData1 = rs.data.data;
+              })
+              .catch((e) => {
+                console.error(e);
+                console.log(e);
+              });
+
+            this.$message({
+              message: `Cập nhật loại tin tức thành công !`,
+              type: "success",
+            });
+          } catch (e) {
+            console.log(e);
+            this.$message({
+              message: `Cập nhật loại tin tức không thành công ! `,
+            });
+          }
+        }
+      });
     },
     async confirm(index, row, formName) {
       this.$refs[formName].validate(async (valid) => {
@@ -617,26 +524,27 @@ export default {
               var ref = firebase
                 .storage()
                 .refFromURL("gs://mumbi-app-84d15.appspot.com")
-                .child(`Guidebooks/${this.form.imageFile.name}`);
+                .child(`News/${this.form.imageFile.name}`);
 
               await ref.put(this.form.imageFile);
               let imageUrl1 = await ref.getDownloadURL();
               await axios.put(
-                `https://service.mumbi.xyz/api/Guidebooks/UpdateGuidebook/` +
+                `https://service.mumbi.xyz/api/News/UpdateNews/` +
                   NewsId,
                 {
                   id: NewsId,
                   title: this.form.title,
-                  guidebookContent: this.form.NewsContent,
+                  newsContent: this.form.NewsContent,
                   imageURL: imageUrl1,
                   typeId: this.form.typeName,
                   estimatedFinishTime: this.form.estimateTime1,
                   lastModifiedBy: userInfo.id,
-                  suitableAge: this.form.suitableAge1
                 }
               );
               await axios
-                .get(`https://service.mumbi.xyz/api/Guidebooks/GetAllGuidebook`)
+                .get(
+                  `https://service.mumbi.xyz/api/News/GetAllNews`
+                )
                 .then((rs) => {
                   this.tableData = rs.data.data;
                 })
@@ -646,21 +554,22 @@ export default {
                 });
             } else {
               await axios.put(
-                `https://service.mumbi.xyz/api/Guidebooks/UpdateGuidebook/` +
+                `https://service.mumbi.xyz/api/News/UpdateNews/` +
                   NewsId,
                 {
                   imageURL: this.form.imageUrl,
                   id: NewsId,
                   title: this.form.title,
-                  guidebookContent: this.form.NewsContent,
+                  newsContent: this.form.NewsContent,
                   typeId: this.form.typeName,
                   estimatedFinishTime: this.form.estimateTime1,
                   lastModifiedBy: userInfo.id,
-                  suitableAge: this.form.suitableAge1
                 }
               );
               await axios
-                .get(`https://service.mumbi.xyz/api/Guidebooks/GetAllGuidebook`)
+                .get(
+                  `https://service.mumbi.xyz/api/News/GetAllNews`
+                )
                 .then((rs) => {
                   this.tableData = rs.data.data;
                 })
@@ -671,13 +580,13 @@ export default {
             }
 
             this.$message({
-              message: `Cập nhật cẩm nang thành công !`,
+              message: `Cập nhật tin tức thành công !`,
               type: "success",
             });
           } catch (e) {
             console.log(e);
             this.$message({
-              message: `Cập nhật cẩm nang không thành công ! `,
+              message: `Cập nhật tin tức không thành công ! `,
             });
           }
         }
@@ -704,48 +613,47 @@ export default {
           let NewsContent = this.addNews.NewsContent;
           let titleNews = this.addNews.newsTitle;
           let time = this.addNews.estimateTime;
-          let age = this.addNews.suitableAge
           try {
             if (this.addNews.imageFile) {
               var ref = firebase
                 .storage()
                 .refFromURL("gs://mumbi-app-84d15.appspot.com")
-                .child(`Guidebooks/${this.addNews.imageFile.name}`);
+                .child(`News/${this.addNews.imageFile.name}`);
 
               await ref.put(this.addNews.imageFile);
               let imageUrl = await ref.getDownloadURL();
 
               await axios.post(
-                `https://service.mumbi.xyz/api/Guidebooks/AddGuidebook`,
+                `https://service.mumbi.xyz/api/News/AddNews`,
                 {
                   title: titleNews,
-                  guidebookContent: NewsContent,
+                  newsContent: NewsContent,
                   imageURL: imageUrl,
                   typeId: type,
                   estimatedFinishTime: time,
                   createdBy: userInfo.id,
-                  suitableAge: age
                 }
               );
             } else {
               await axios.post(
-                `https://service.mumbi.xyz/api/Guidebooks/AddGuidebook`,
+                `https://service.mumbi.xyz/api/News/AddNews`,
                 {
                   title: titleNews,
-                  guidebookContent: NewsContent,
+                  newsContent: NewsContent,
                   typeId: type,
                   estimatedFinishTime: time,
                   createdBy: userInfo.id,
-                  suitableAge: age
                 }
               );
             }
             this.$message({
               type: "success",
-              message: `Tạo cẩm nang thành công !`,
+              message: `Tạo tin tức thành công !`,
             });
             await axios
-              .get(`https://service.mumbi.xyz/api/Guidebooks/GetAllGuidebook`)
+              .get(
+                `https://service.mumbi.xyz/api/News/GetAllNews`
+              )
               .then((rs) => {
                 this.tableData = rs.data.data;
               })
@@ -756,7 +664,7 @@ export default {
           } catch (e) {
             console.log(e);
             this.$message({
-              message: `Tạo cẩm nang không thành công !`,
+              message: `Tạo tin tức không thành công !`,
             });
           }
         }
@@ -815,7 +723,7 @@ export default {
             this.NewsIdDelete = row.id;
             axios
               .put(
-                `https://service.mumbi.xyz/api/Guidebooks/DeleteGuidebook/` +
+                `https://service.mumbi.xyz/api/News/DeleteNews/` +
                   this.NewsIdDelete
               )
               .then((response) => {});
@@ -836,109 +744,6 @@ export default {
         });
       });
     },
-    viewDetail(index, row) {
-      localStorage.setItem("GuidebookId", row.id);
-      this.$router.push({
-        name: "CẨM NANG CHI TIẾT",
-      });
-    },
-    async onSearchInput(e) {
-      if (this.search === "") {
-        this.rsPage = 1;
-      } else {
-        this.rsPage = 0;
-      }
-      try {
-        let result = await axios.get(`${backendIp}/api/Newss?query=${e}`);
-        console.log(result);
-        this.searchResult = result.data.data;
-      } catch (error) {
-        this.searchResult = null;
-        console.log(error);
-      }
-    },
-    cancel(formName) {
-      this.$refs[formName].resetFields();
-      this.dialogFormAddVisible = false;
-    },
-    async addType() {
-      if (this.typeNews === "") {
-        this.$message({
-          message: `Vui lòng nhập loại cẩm nang !`,
-          type: "warning",
-        });
-      } else {
-        await axios.post(
-          `https://service.mumbi.xyz/api/GuidebooksType/AddGuidebookType`,
-          {
-            type: this.typeNews,
-          }
-        );
-        await axios
-          .get(
-            `https://service.mumbi.xyz/api/GuidebooksType/GetAllGuidebookType`
-          )
-          .then((rs) => {
-            this.tableData1 = rs.data.data;
-          })
-          .catch((e) => {
-            console.error(e);
-            console.log(e);
-          });
-      }
-    },
-    handleEdit1(index, row) {
-      this.dialogFormVisible1 = true;
-      this.editedIndex = this.tableData1.indexOf(row);
-      this.form1.typeNews = row.type;
-    },
-    async confirm1(index, row, formName) {
-      this.$refs[formName].validate(async (valid) => {
-        if (valid) {
-          this.dialogFormVisible1 = false;
-          let NewsId = this.tableData1[this.editedIndex].id;
-          try {
-            await axios.put(
-              `https://service.mumbi.xyz/api/GuidebooksType/UpdateGuidebookType/` +
-                NewsId,
-              {
-                id: NewsId,
-                type: this.form1.typeNews,
-              }
-            );
-            await axios
-              .get(
-                `https://service.mumbi.xyz/api/GuidebooksType/GetAllGuidebookType`
-              )
-              .then((rs) => {
-                this.tableData1 = rs.data.data;
-              })
-              .catch((e) => {
-                console.error(e);
-                console.log(e);
-              });
-            axios
-              .get(`https://service.mumbi.xyz/api/Guidebooks/GetAllGuidebook`)
-              .then((rs) => {
-                this.tableData = rs.data.data;
-              })
-              .catch((e) => {
-                console.error(e);
-                console.log(e);
-              });
-            this.$message({
-              message: `Cập nhật loại cẩm nang thành công !`,
-              type: "success",
-            });
-          } catch (e) {
-            console.log(e);
-            this.$message({
-              message: `Cập nhật loại cẩm nang không thành công ! `,
-            });
-          }
-        }
-      });
-    },
     handleDelete1(index, row) {
       const h = this.$createElement;
       this.$msgbox({
@@ -947,7 +752,7 @@ export default {
           h(
             "span",
             { style: "color: black" },
-            "Những cẩm nang có cùng loại này sẽ bị xóa. Bạn có chắc chắn muốn xóa ? "
+            "Những tin tức có loại này sẽ bị xóa. Bạn có chắc chắn muốn xóa ? "
           ),
         ]),
         showCancelButton: true,
@@ -966,14 +771,14 @@ export default {
             this.NewsIdDelete = row.id;
             axios
               .put(
-                `https://service.mumbi.xyz/api/GuidebooksType/DeleteGuidebookType/` +
+                `https://service.mumbi.xyz/api/NewsType/DeleteNewsType/` +
                   this.NewsIdDelete
               )
               .then((response) => {
                 setTimeout(async () => {
                   await axios
                     .get(
-                      `https://service.mumbi.xyz/api/GuidebooksType/GetAllGuidebookType`
+                      `https://service.mumbi.xyz/api/NewsType/GetAllNewsType`
                     )
                     .then((rs) => {
                       this.tableData1 = rs.data.data;
@@ -998,12 +803,63 @@ export default {
         });
       });
     },
+    viewDetail(index, row) {
+      localStorage.setItem("NewsId", row.id);
+      this.$router.push({
+        name: "TIN TỨC CHI TIẾT",
+      });
+    },
+    async onSearchInput(e) {
+      if (this.search === "") {
+        this.rsPage = 1;
+      } else {
+        this.rsPage = 0;
+      }
+      try {
+        let result = await axios.get(`${backendIp}/api/Newss?query=${e}`);
+        console.log(result);
+        this.searchResult = result.data.data;
+      } catch (error) {
+        this.searchResult = null;
+        console.log(error);
+      }
+    },
+    async addType() {
+      if (this.typeNews === "") {
+        this.$message({
+          message: `Vui lòng nhập loại tin tức !`,
+          type: "warning",
+        });
+      } else {
+        await axios.post(
+          backendIp+`/api/NewsType/AddNewsType`,
+          {
+            type: this.typeNews,
+          }
+        );
+        await axios
+          .get(
+            backendIp+`/api/NewsType/GetAllNewsType`
+          )
+          .then((rs) => {
+            this.tableData1 = rs.data.data;
+          })
+          .catch((e) => {
+            console.error(e);
+            console.log(e);
+          });
+      }
+    },
+    cancel(formName) {
+      this.$refs[formName].resetFields();
+      this.dialogFormAddVisible = false;
+    },
   },
 };
 </script>
 <style>
 p {
-  color: #606266;
+  color: black;
 }
 .el-table td {
   text-align: center;

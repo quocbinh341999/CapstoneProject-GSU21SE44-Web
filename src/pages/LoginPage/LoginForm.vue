@@ -74,6 +74,16 @@ export default {
         .signInWithPopup(provider)
         .then(async (result) => {
           let token = await result.user.getIdToken();
+          // if ("serviceWorker" in navigator) {
+          //   navigator.serviceWorker
+          //     .register("./firebase-messaging-sw.js")
+          //     .then(function (registration) {
+          //       messaging.getToken({
+          //         vapidKey: "BNN2j64Wo_Ma8G7ElOgRnFH-k9raFwK4jbdOyTJ6BkRPHrI6FXdALMMlKz93x1rSbptR7_ogIHI0yeKLRwnUxVU",
+          //         serviceWorkerRegistration: registration,
+          //       });
+          //     });
+          // }
           let token2 = await this.$messaging.getToken({
             vapidKey:
               "BNN2j64Wo_Ma8G7ElOgRnFH-k9raFwK4jbdOyTJ6BkRPHrI6FXdALMMlKz93x1rSbptR7_ogIHI0yeKLRwnUxVU",

@@ -15,16 +15,17 @@
           <span>{{ scope.row.createdBy }}</span>
         </template>
       </el-table-column> -->
-      <el-table-column label="Hình ảnh" prop="image" width="200">
+      <!-- <el-table-column label="Hình ảnh" prop="image" width="200">
         <template slot-scope="scope">
+          <span v-if="scope.row.imageURL = null">Không có hình ảnh</span>
           <img
             v-if="scope.row.imageURL != ''"
             :src="scope.row.imageURL"
             style="height: 150px; width: 300px"
           />
         </template>
-      </el-table-column>
-      <el-table-column label="Nội dung" width="750">
+      </el-table-column> -->
+      <el-table-column label="Nội dung" width="950">
         <template slot-scope="scope">
           <span>{{ scope.row.diaryContent }}</span>
         </template>
@@ -152,7 +153,7 @@ export default {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
       await axios
         .put(
-          `https://service.mumbi.xyz/api/Diaries/UpdateDiary/${diaryId}?childID=${childIdApprove}`,
+          `https://service.mumbi.xyz/api/Diaries/UpdateDiaryPublic/${diaryId}?childID=${childIdApprove}`,
           {
             id: diaryId,
             approvedFlag: true,
@@ -231,7 +232,7 @@ export default {
       let content = this.tableData[this.editedIndex].diaryContent;
       await axios
         .put(
-          `https://service.mumbi.xyz/api/Diaries/UpdateDiary/${diaryId}?childID=${childIdApprove}`,
+          `https://service.mumbi.xyz/api/Diaries/UpdateDiaryPublic/${diaryId}?childID=${childIdApprove}`,
           {
             id: diaryId,
             approvedFlag: false,

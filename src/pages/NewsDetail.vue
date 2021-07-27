@@ -48,15 +48,20 @@ export default {
 <style>
 p {
   color: #363636;
-  margin-left: 10px;
+  margin-left: 15px;
+}
+strong{
+  margin-left: 15px;
 }
 img {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  max-width: 100%;
 }
 figcaption {
   text-align: center;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 </style>
