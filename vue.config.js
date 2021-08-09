@@ -31,13 +31,13 @@ module.exports = {
         maxChunks: 6
       }),
       // CKEditor needs its own plugin to be built using webpack.
-      new CKEditorWebpackPlugin({
-        // See https://ckeditor.com/docs/ckeditor5/latest/features/ui-language.html
-        language: 'en',
+      // new CKEditorWebpackPlugin({
+      //   // See https://ckeditor.com/docs/ckeditor5/latest/features/ui-language.html
+      //   language: 'en',
 
-        // Append translations to the file matching the `app` name.
-        translationsOutputFile: /app/
-      })
+      //   // Append translations to the file matching the `app` name.
+      //   translationsOutputFile: /app/
+      // })
     ]
   },
   pwa: {

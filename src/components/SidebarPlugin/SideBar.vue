@@ -13,7 +13,7 @@
     <div class="sidebar-wrapper" id="style-3">
       <div class="logo">
         <a
-          href="http://www.creative-tim.com"
+          href=""
           aria-label="sidebar mini logo"
           class="simple-text logo-mini"
         >
@@ -21,7 +21,7 @@
             <img src="@/assets/mumbi.png" alt="" />
           </div>
         </a>
-        <a href="/dashboard" class="simple-text logo-normal">
+        <a class="simple-text logo-normal">
           {{ title }}
         </a>
       </div>
@@ -49,7 +49,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: "Mumbi",
+      default: "Quản lý Mumbi",
     },
     // backgroundColor: {
     //   type: String,
@@ -74,7 +74,7 @@ export default {
     },
     backgroundImage: {
       type: String,
-      default: "img/sidebar-5.jpg",
+      default: "img/b7.jpg",
     },
     activeColor: {
       type: String,

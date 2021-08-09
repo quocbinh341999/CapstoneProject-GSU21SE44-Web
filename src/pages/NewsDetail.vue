@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1 style="color: #363636;">TIN TỨC CHI TIẾT</h1>
-    <div style="width: 100%; height: 100%; background-color:white">
+    <div style="width: 100%; height: 100%; background-color:#f6f8fd">
       <div
         style="
           text-align: center;

@@ -33,7 +33,7 @@ const backendIp = baseConfig.backendIp;
 export default {
   data() {
     return {
-      headerText: "Welcome to Mumbi",
+      headerText: "Chào mừng đến với Mumbi",
     };
   },
   components: {
@@ -105,7 +105,7 @@ export default {
             });
           } else if (loginResult.data.data.role === "role02") {
             this.$router.push({
-              name: "dashboard",
+              name: "QUẢN LÝ NGƯỜI DÙNG",
             });
             // let tokenResult = await axios.get(
             //   `https://service.mumbi.xyz/api/Token/GetTokenBy/${userInfo.id}`
@@ -130,9 +130,9 @@ export default {
 .a-heroImage {
   width: 50vw;
   height: 100vh;
-  background-image: url(1.jpg);
+  background-image: url('background2.jpg');
   background-repeat: no-repeat;
-  background-position: center;
+  // background-position: center;
   background-size: cover;
 }
 </style>

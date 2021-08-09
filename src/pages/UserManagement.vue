@@ -57,6 +57,7 @@
               v-if="tableData2 != null"
               :data="tableData2"
               stripe
+              style="width: 90%; margin-left: 7.5%"
             >
               <el-table-column label="STT" type="index" width="60">
               </el-table-column>
@@ -77,9 +78,9 @@
               <el-table-column label="Giới tính" width="100">
                 <template slot-scope="scope">
                   <span>{{
-                    scope.row.gender === "1"
+                    scope.row.gender === 1
                       ? "Bé trai"
-                      : scope.row.gender === "2"
+                      : scope.row.gender === 2
                       ? "Bé gái"
                       : "Chưa rõ"
                   }}</span>

@@ -3,15 +3,15 @@
     <h1 style="color: #909399">QUẢN LÝ CẨM NANG</h1>
     <el-button
       type="primary"
-      @click="dialogFormAddVisible = true"
-      style="margin-bottom: 15px; color: #909399"
+      @click="addGuidebook()"
+      style="margin-bottom: 15px; color: white; background-color: #67c23a"
       plain
       >Thêm cẩm nang mới</el-button
     >
     <el-button
       type="primary"
       @click="dialogFormAddVisible1 = true"
-      style="margin-bottom: 15px; color: #909399"
+      style="margin-bottom: 15px; color: white; background-color: #67c23a"
       plain
       >Quản lý loại cẩm nang</el-button
     >
@@ -21,7 +21,7 @@
       :lock-scroll="true"
     >
       <label :label-width="formLabelWidth" style="margin-left: 3px"
-        >Loại tin tức</label
+        >Loại cẩm nang</label
       >
       <el-input
         v-model="typeNews"
@@ -165,14 +165,14 @@
           <mumbi-editor v-model="addNews.NewsContent"></mumbi-editor>
         </el-form-item>
         <el-form-item
-          label="Thời gian đọc"
+          label="Thời gian đọc (phút)"
           :label-width="formLabelWidth"
           prop="estimateTime"
         >
           <el-input v-model.number="addNews.estimateTime"></el-input>
         </el-form-item>
         <el-form-item
-          label="Độ tuổi"
+          label="Độ tuổi (tuần tuổi)"
           :label-width="formLabelWidth"
           prop="suitableAge"
         >
@@ -219,7 +219,7 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="Tiêu đề" width="210">
+      <el-table-column label="Tiêu đề" width="200">
         <template slot-scope="scope">
           <span>{{ scope.row.title }}</span>
         </template>
@@ -232,17 +232,17 @@
           ></a> -->
       <!-- </template> -->
       <!-- </el-table-column> -->
-      <el-table-column label="Loại cẩm nang" :min-width="60">
+      <el-table-column label="Loại cẩm nang" :min-width="50">
         <template slot-scope="scope">
           <span>{{ scope.row.type }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Thời gian đọc" :min-width="40">
+      <el-table-column label="Thời gian đọc (phút)" :min-width="50">
         <template slot-scope="scope">
           <span>{{ scope.row.estimatedFinishTime }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Độ tuổi" :min-width="40">
+      <el-table-column label="Độ tuổi (tuần tuổi)" :min-width="40">
         <template slot-scope="scope">
           <span>{{ scope.row.suitableAge }}</span>
         </template>
@@ -334,7 +334,7 @@
                 <mumbi-editor v-model="form.NewsContent"></mumbi-editor>
               </el-form-item>
               <el-form-item
-                label="Thời gian đọc"
+                label="Thời gian đọc (phút)"
                 :label-width="formLabelWidth"
                 prop="estimateTime1"
               >
@@ -344,7 +344,7 @@
                 ></el-input>
               </el-form-item>
               <el-form-item
-                label="Độ tuổi"
+                label="Độ tuổi (tuần tuổi)"
                 :label-width="formLabelWidth"
                 prop="suitableAge1"
               >
@@ -400,7 +400,7 @@
           circle
           @click="paginationLoad(item.pageId)"
           type="success"
-          >{{ item.pageId }}</el-button
+          >{{ item.pageNumber }}</el-button
         >
       </el-col>
     </el-row>
@@ -530,7 +530,7 @@ export default {
         suitableAge: "",
       },
       uploadingImage: "",
-      formLabelWidth: "120px",
+      formLabelWidth: "130px",
       formLabelWidth1: "180px",
       search: "",
       editedIndex: -1,
@@ -632,7 +632,7 @@ export default {
                   typeId: this.form.typeName,
                   estimatedFinishTime: this.form.estimateTime1,
                   lastModifiedBy: userInfo.id,
-                  suitableAge: this.form.suitableAge1
+                  suitableAge: this.form.suitableAge1,
                 }
               );
               await axios
@@ -656,7 +656,7 @@ export default {
                   typeId: this.form.typeName,
                   estimatedFinishTime: this.form.estimateTime1,
                   lastModifiedBy: userInfo.id,
-                  suitableAge: this.form.suitableAge1
+                  suitableAge: this.form.suitableAge1,
                 }
               );
               await axios
@@ -704,7 +704,7 @@ export default {
           let NewsContent = this.addNews.NewsContent;
           let titleNews = this.addNews.newsTitle;
           let time = this.addNews.estimateTime;
-          let age = this.addNews.suitableAge
+          let age = this.addNews.suitableAge;
           try {
             if (this.addNews.imageFile) {
               var ref = firebase
@@ -724,7 +724,7 @@ export default {
                   typeId: type,
                   estimatedFinishTime: time,
                   createdBy: userInfo.id,
-                  suitableAge: age
+                  suitableAge: age,
                 }
               );
             } else {
@@ -736,7 +736,7 @@ export default {
                   typeId: type,
                   estimatedFinishTime: time,
                   createdBy: userInfo.id,
-                  suitableAge: age
+                  suitableAge: age,
                 }
               );
             }
@@ -849,7 +849,7 @@ export default {
         this.rsPage = 0;
       }
       try {
-        let result = await axios.get(`${backendIp}/api/Newss?query=${e}`);
+        let result = await axios.get(`https://service.mumbi.xyz/api/Guidebooks/GetGuidebook?SearchValue=${e}`);
         console.log(result);
         this.searchResult = result.data.data;
       } catch (error) {
@@ -874,6 +874,10 @@ export default {
             type: this.typeNews,
           }
         );
+        this.$message({
+          message: `Tạo loại cẩm nang mới thành công !`,
+          type: "success",
+        });
         await axios
           .get(
             `https://service.mumbi.xyz/api/GuidebooksType/GetAllGuidebookType`
@@ -886,6 +890,7 @@ export default {
             console.log(e);
           });
       }
+      this.typeNews = ''
     },
     handleEdit1(index, row) {
       this.dialogFormVisible1 = true;
@@ -938,6 +943,27 @@ export default {
           }
         }
       });
+    },
+    addGuidebook() {
+      this.dialogFormAddVisible = true;
+      axios
+        .get(`https://service.mumbi.xyz/api/GuidebooksType/GetAllGuidebookType`)
+        .then((res) => {
+          this.listtype = res.data.data;
+          this.tableData1 = res.data.data;
+        })
+        .catch((e) => {
+          console.error(e);
+          console.log(e);
+        });
+      this.addNews.NewsContent = "",
+      this.addNews.typeId= "",
+      this.addNews.imageUrl= "",
+      this.addNews.imageFile= "",
+      this.addNews.newsTitle= "",
+      this.addNews.estimateTime= "",
+      this.addNews.typeName= "",
+      this.addNews.suitableAge= ""
     },
     handleDelete1(index, row) {
       const h = this.$createElement;
@@ -1010,5 +1036,13 @@ p {
 }
 .el-table th {
   text-align: center;
+}
+span {
+  word-wrap: normal;
+  word-break: normal;
+}
+.ck-content {
+  word-wrap: normal;
+  word-break: normal;
 }
 </style>

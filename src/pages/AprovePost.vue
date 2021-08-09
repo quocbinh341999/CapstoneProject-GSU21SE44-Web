@@ -25,7 +25,7 @@
           />
         </template>
       </el-table-column> -->
-      <el-table-column label="Nội dung" width="950">
+      <el-table-column label="Nội dung" :min-width="300">
         <template slot-scope="scope">
           <span>{{ scope.row.diaryContent }}</span>
         </template>
@@ -160,7 +160,7 @@ export default {
             publicFlag: true,
             diaryContent: content,
             childId: childIdApprove,
-            lastModifiedBy: userInfo.id,
+            // lastModifiedBy: userInfo.id,
             publicDate: new Date()
           }
         )
@@ -237,9 +237,9 @@ export default {
             id: diaryId,
             approvedFlag: false,
             publicFlag: false,
-            diaryContent: content,
             childId: childIdApprove,
-            lastModifiedBy: userInfo.id
+            publicDate: new Date()
+            // lastModifiedBy: userInfo.id
           }
         )
         .then((rs) => {

@@ -9,20 +9,12 @@ const LoginPage = () => import("@/pages/LoginPage.vue");
 const Dashboard = () => import(/* webpackChunkName: "dashboard" */"@/pages/Dashboard.vue");
 const Profile = () => import(/* webpackChunkName: "common" */ "@/pages/Profile.vue");
 const Notifications = () => import(/* webpackChunkName: "common" */"@/pages/Notifications.vue");
-const Icons = () => import(/* webpackChunkName: "common" */ "@/pages/Icons.vue");
-const Maps = () => import(/* webpackChunkName: "common" */ "@/pages/Maps.vue");
-const Typography = () => import(/* webpackChunkName: "common" */ "@/pages/Typography.vue");
-const TableList = () => import(/* webpackChunkName: "common" */ "@/pages/TableList.vue");
 const UserManagement = () => import(/* webpackChunkName: "common" */ "@/pages/UserManagement.vue");
-const EventManagement = () => import(/* webpackChunkName: "common" */ "@/pages/EventManagement.vue");
+const ActivityManagement = () => import(/* webpackChunkName: "common" */ "@/pages/ActivityManagement.vue");
 const NewsManagement = () => import(/* webpackChunkName: "common" */ "@/pages/NewsManagement.vue");
-const UserGM = () => import(/* webpackChunkName: "common" */ "@/pages/UserGM.vue");
-const EventGM = () => import(/* webpackChunkName: "common" */ "@/pages/EventGM.vue");
-const PostGM = () => import(/* webpackChunkName: "common" */ "@/pages/PostGM.vue");
 const GuidebookManagement = () => import(/* webpackChunkName: "common" */ "@/pages/GuidebookManagement.vue");
 const ApprovePost = () => import(/* webpackChunkName: "common" */ "@/pages/AprovePost.vue");
 const EditProfile = () => import(/* webpackChunkName: "common" */ "@/pages/Profile/EditProfileForm.vue")
-const NotificationManagement = () => import(/* webpackChunkName: "common" */ "@/pages/NotificationManagement.vue")
 const NewsDetail = () => import(/* webpackChunkName: "common" */ "@/pages/NewsDetail.vue")
 const GuidebookDetail = () => import(/* webpackChunkName: "common" */ "@/pages/GuidebookDetail.vue")
 const DiaryDetail = () => import(/* webpackChunkName: "common" */ "@/pages/DiaryDetail.vue")
@@ -39,33 +31,6 @@ const routes = [
       },
     ]
   },
-  // {
-  //   path: "/dashboardGM",
-  //   component: DashboardGroupManager,
-  //   redirect: "/eventGM",
-  //   children: [
-  //     // {
-  //     //   path: "/userGM",
-  //     //   name: "userGM",
-  //     //   component: UserGM
-  //     // },
-  //     {
-  //       path: "/eventGM",
-  //       name: "eventGM",
-  //       component: EventGM
-  //     },
-  //     {
-  //       path: "/postGM",
-  //       name: "postGM",
-  //       component: PostGM
-  //     },
-  //     {
-  //       path: "/myprofile",
-  //       name: "myprofile",
-  //       component: Profile
-  //     },
-  //   ]
-  // },
   {
     path: "/dashboard",
     component: DashboardLayout,
@@ -82,39 +47,9 @@ const routes = [
         component: Profile
       },
       {
-        path: "/notifications",
-        name: "notifications",
-        component: Notifications
-      },
-      {
-        path: "/icons",
-        name: "icons",
-        component: Icons
-      },
-      {
-        path: "/maps",
-        name: "maps",
-        component: Maps
-      },
-      {
-        path: "/typography",
-        name: "typography",
-        component: Typography
-      },
-      {
-        path: "/table-list",
-        name: "table-list",
-        component: TableList
-      },
-      {
         path: "/usermanagement",
         name: "QUẢN LÝ NGƯỜI DÙNG",
         component: UserManagement
-      },
-      {
-        path: "/eventmanagement",
-        name: "eventmanagement",
-        component: EventManagement
       },
       {
         path: "/newsmanagement",
@@ -125,6 +60,11 @@ const routes = [
         path: "/guidebookmanagement",
         name: "QUẢN LÝ CẨM NANG",
         component: GuidebookManagement
+      },
+      {
+        path: "/activitymanagement",
+        name: "QUẢN LÝ HOẠT ĐỘNG",
+        component: ActivityManagement
       },
       {
         path: "/approvepost",

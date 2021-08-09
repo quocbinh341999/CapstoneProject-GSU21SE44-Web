@@ -1,6 +1,6 @@
 <template>
   <div class="content" 
-  style="background-color: #DCDCDC"
+  style="background-color: #f6f8fd"
   >
     <fade-transition :duration="100" mode="out-in">
       <!-- your content here -->

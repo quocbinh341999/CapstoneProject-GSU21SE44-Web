@@ -3,15 +3,15 @@
     <h1 style="color: #909399">QUẢN LÝ TIN TỨC</h1>
     <el-button
       type="primary"
-      @click="dialogFormAddVisible = true"
-      style="margin-bottom: 15px; color: #909399"
+      @click="addNewNews()"
+      style="margin-bottom: 15px; color: white; background-color: #67c23a"
       plain
       >Thêm tin mới</el-button
     >
     <el-button
       type="primary"
       @click="dialogFormAddVisible1 = true"
-      style="margin-bottom: 15px; color: #909399"
+      style="margin-bottom: 15px; color: white; background-color: #67c23a"
       plain
       >Quản lý loại tin tức</el-button
     >
@@ -113,7 +113,7 @@
               </div>
             </el-image>
 
-            <img style="width: 100%" :src="addNews.imageUrl" />
+            <img :src="addNews.imageUrl" />
           </el-form-item>
         </el-row>
         <label class="file-select" style="margin-left: 80%">
@@ -159,7 +159,7 @@
           <mumbi-editor v-model="addNews.NewsContent"></mumbi-editor>
         </el-form-item>
         <el-form-item
-          label="Thời gian đọc"
+          label="Thời gian đọc (phút)"
           :label-width="formLabelWidth"
           prop="estimateTime"
         >
@@ -216,7 +216,7 @@
           <span>{{ scope.row.type }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Thời gian đọc" :min-width="60">
+      <el-table-column label="Thời gian đọc (phút)" :min-width="60">
         <template slot-scope="scope">
           <span>{{ scope.row.estimatedFinishTime }}</span>
         </template>
@@ -308,7 +308,7 @@
                 <mumbi-editor v-model="form.NewsContent"></mumbi-editor>
               </el-form-item>
               <el-form-item
-                label="Thời gian đọc"
+                label="Thời gian đọc (phút)"
                 :label-width="formLabelWidth"
                 prop="estimateTime1"
               >
@@ -481,7 +481,7 @@ export default {
         typeName: "",
       },
       uploadingImage: "",
-      formLabelWidth: "120px",
+      formLabelWidth: "130px",
       formLabelWidth1: "180px",
       search: "",
       editedIndex: -1,
@@ -499,9 +499,7 @@ export default {
   },
   created: function () {
     axios
-      .get(
-        `https://service.mumbi.xyz/api/News/GetAllNews`
-      )
+      .get(`https://service.mumbi.xyz/api/News/GetAllNews`)
       .then((rs) => {
         this.tableData = rs.data.data;
       })
@@ -510,9 +508,7 @@ export default {
         console.log(e);
       });
     axios
-      .get(
-        `https://service.mumbi.xyz/api/NewsType/GetAllNewsType`
-      )
+      .get(`https://service.mumbi.xyz/api/NewsType/GetAllNewsType`)
       .then((res) => {
         this.listtype = res.data.data;
         this.tableData1 = res.data.data;
@@ -565,17 +561,14 @@ export default {
           let NewsId = this.tableData1[this.editedIndex].id;
           try {
             await axios.put(
-              `https://service.mumbi.xyz/api/NewsType/UpdateNewsType/` +
-                NewsId,
+              `https://service.mumbi.xyz/api/NewsType/UpdateNewsType/` + NewsId,
               {
                 id: NewsId,
                 type: this.form1.typeNews,
               }
             );
             await axios
-              .get(
-                `https://service.mumbi.xyz/api/NewsType/GetAllNewsType`
-              )
+              .get(`https://service.mumbi.xyz/api/NewsType/GetAllNewsType`)
               .then((rs) => {
                 this.tableData1 = rs.data.data;
               })
@@ -583,7 +576,15 @@ export default {
                 console.error(e);
                 console.log(e);
               });
-
+            await axios
+              .get(`https://service.mumbi.xyz/api/News/GetAllNews`)
+              .then((rs) => {
+                this.tableData = rs.data.data;
+              })
+              .catch((e) => {
+                console.error(e);
+                console.log(e);
+              });
             this.$message({
               message: `Cập nhật loại tin tức thành công !`,
               type: "success",
@@ -613,8 +614,7 @@ export default {
               await ref.put(this.form.imageFile);
               let imageUrl1 = await ref.getDownloadURL();
               await axios.put(
-                `https://service.mumbi.xyz/api/News/UpdateNews/` +
-                  NewsId,
+                `https://service.mumbi.xyz/api/News/UpdateNews/` + NewsId,
                 {
                   id: NewsId,
                   title: this.form.title,
@@ -626,9 +626,7 @@ export default {
                 }
               );
               await axios
-                .get(
-                  `https://service.mumbi.xyz/api/News/GetAllNews`
-                )
+                .get(`https://service.mumbi.xyz/api/News/GetAllNews`)
                 .then((rs) => {
                   this.tableData = rs.data.data;
                 })
@@ -638,8 +636,7 @@ export default {
                 });
             } else {
               await axios.put(
-                `https://service.mumbi.xyz/api/News/UpdateNews/` +
-                  NewsId,
+                `https://service.mumbi.xyz/api/News/UpdateNews/` + NewsId,
                 {
                   imageURL: this.form.imageUrl,
                   id: NewsId,
@@ -651,9 +648,7 @@ export default {
                 }
               );
               await axios
-                .get(
-                  `https://service.mumbi.xyz/api/News/GetAllNews`
-                )
+                .get(`https://service.mumbi.xyz/api/News/GetAllNews`)
                 .then((rs) => {
                   this.tableData = rs.data.data;
                 })
@@ -707,37 +702,29 @@ export default {
               await ref.put(this.addNews.imageFile);
               let imageUrl = await ref.getDownloadURL();
 
-              await axios.post(
-                `https://service.mumbi.xyz/api/News/AddNews`,
-                {
-                  title: titleNews,
-                  newsContent: NewsContent,
-                  imageURL: imageUrl,
-                  typeId: type,
-                  estimatedFinishTime: time,
-                  createdBy: userInfo.id,
-                }
-              );
+              await axios.post(`https://service.mumbi.xyz/api/News/AddNews`, {
+                title: titleNews,
+                newsContent: NewsContent,
+                imageURL: imageUrl,
+                typeId: type,
+                estimatedFinishTime: time,
+                createdBy: userInfo.id,
+              });
             } else {
-              await axios.post(
-                `https://service.mumbi.xyz/api/News/AddNews`,
-                {
-                  title: titleNews,
-                  newsContent: NewsContent,
-                  typeId: type,
-                  estimatedFinishTime: time,
-                  createdBy: userInfo.id,
-                }
-              );
+              await axios.post(`https://service.mumbi.xyz/api/News/AddNews`, {
+                title: titleNews,
+                newsContent: NewsContent,
+                typeId: type,
+                estimatedFinishTime: time,
+                createdBy: userInfo.id,
+              });
             }
             this.$message({
               type: "success",
               message: `Tạo tin tức thành công !`,
             });
             await axios
-              .get(
-                `https://service.mumbi.xyz/api/News/GetAllNews`
-              )
+              .get(`https://service.mumbi.xyz/api/News/GetAllNews`)
               .then((rs) => {
                 this.tableData = rs.data.data;
               })
@@ -900,7 +887,7 @@ export default {
         this.rsPage = 0;
       }
       try {
-        let result = await axios.get(`${backendIp}/api/Newss?query=${e}`);
+        let result = await axios.get(`https://service.mumbi.xyz/api/News/GetNews?SearchValue=${e}`);
         console.log(result);
         this.searchResult = result.data.data;
       } catch (error) {
@@ -915,16 +902,15 @@ export default {
           type: "warning",
         });
       } else {
-        await axios.post(
-          backendIp+`/api/NewsType/AddNewsType`,
-          {
-            type: this.typeNews,
-          }
-        );
+        await axios.post(backendIp + `/api/NewsType/AddNewsType`, {
+          type: this.typeNews,
+        });
+        this.$message({
+          message: `Tạo loại tin tức mới thành công !`,
+          type: "success",
+        });
         await axios
-          .get(
-            backendIp+`/api/NewsType/GetAllNewsType`
-          )
+          .get(backendIp + `/api/NewsType/GetAllNewsType`)
           .then((rs) => {
             this.tableData1 = rs.data.data;
           })
@@ -932,7 +918,28 @@ export default {
             console.error(e);
             console.log(e);
           });
+        this.typeNews = "";
       }
+    },
+    addNewNews() {
+      this.dialogFormAddVisible = true;
+      axios
+        .get(`https://service.mumbi.xyz/api/NewsType/GetAllNewsType`)
+        .then((res) => {
+          this.listtype = res.data.data;
+          this.tableData1 = res.data.data;
+        })
+        .catch((e) => {
+          console.error(e);
+          console.log(e);
+        });
+      (this.addNews.NewsContent = ""),
+        (this.addNews.typeId = ""),
+        (this.addNews.imageUrl = ""),
+        (this.addNews.imageFile = ""),
+        (this.addNews.newsTitle = ""),
+        (this.addNews.estimateTime = ""),
+        (this.addNews.typeName = "");
     },
     cancel(formName) {
       this.$refs[formName].resetFields();
@@ -950,5 +957,13 @@ p {
 }
 .el-table th {
   text-align: center;
+}
+span {
+  word-wrap: normal;
+  word-break: normal;
+}
+.ck-content {
+  word-wrap: normal;
+  word-break: normal;
 }
 </style>
